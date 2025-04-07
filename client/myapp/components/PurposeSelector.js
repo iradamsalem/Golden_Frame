@@ -110,8 +110,8 @@ const PurposeSelector = ({ selectedPurpose, onPurposeSelect }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Select a Purpose</Text>
+<View style={[styles.container, { backgroundColor: '#1a1a2e', flex: 1 }]}>
+<Text style={styles.title}>Select a Purpose</Text>
       <FlatList
         data={purposes}
         renderItem={renderItem}
