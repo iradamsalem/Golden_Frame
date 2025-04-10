@@ -4,8 +4,8 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  FlatList,
   Image,
+  ScrollView,
   Dimensions,
 } from 'react-native';
 import { Card, CardHeader, CardContent } from '../components/ui/card';
@@ -37,21 +37,6 @@ const UploadPhotosScreen = () => {
     }
   };
 
-  const renderItem = ({ item, index }) => (
-    <View key={index} style={styles.imageWrapper}>
-      <Image source={{ uri: item.uri || item }} style={styles.image} />
-      <TouchableOpacity
-        style={styles.removeButton}
-        onPress={() => {
-          const newPhotos = selectedPhotos.filter((_, i) => i !== index);
-          setSelectedPhotos(newPhotos);
-        }}
-      >
-        <Text style={styles.removeButtonText}>REMOVE</Text>
-      </TouchableOpacity>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Upload Your Photos</Text>
@@ -68,16 +53,28 @@ const UploadPhotosScreen = () => {
             {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
           </CardHeader>
 
-          <CardContent style={{ paddingHorizontal: imageSpacing }}>
+          <CardContent style={styles.cardContent}>
             <PhotoUploader onPhotosUploaded={handlePhotosUploaded} />
-            <FlatList
-              data={selectedPhotos}
-              renderItem={renderItem}
-              keyExtractor={(_, index) => index.toString()}
-              numColumns={2}
-              contentContainerStyle={styles.imageList}
-              columnWrapperStyle={styles.rowJustified}
-            />
+
+            <ScrollView
+              contentContainerStyle={styles.scrollContainer}
+              showsVerticalScrollIndicator={false}
+            >
+              {selectedPhotos.map((item, index) => (
+                <View key={index} style={styles.imageWrapper}>
+                  <Image source={{ uri: item.uri || item }} style={styles.image} />
+                  <TouchableOpacity
+                    style={styles.removeButton}
+                    onPress={() => {
+                      const newPhotos = selectedPhotos.filter((_, i) => i !== index);
+                      setSelectedPhotos(newPhotos);
+                    }}
+                  >
+                    <Text style={styles.removeButtonText}>REMOVE</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </ScrollView>
           </CardContent>
         </Card>
       </View>
@@ -110,6 +107,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: '100%',
     maxWidth: maxCardWidth,
+    flexGrow: 1,
   },
   purposeButton: {
     backgroundColor: '#FFD700',
@@ -131,22 +129,25 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 14,
   },
-  imageList: {
-    marginTop: 10,
-    paddingBottom: 20,
-    paddingHorizontal: 0, // הסרת ריווח פנימי אופקי
+  cardContent: {
+    paddingHorizontal: imageSpacing,
+    maxHeight: 500,
   },
-  rowJustified: {
-    justifyContent: 'space-between', // ריווח אחיד בין התמונות
-    alignItems: 'flex-start',
+  scrollContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingBottom: 20,
+    marginTop: 10,
   },
   imageWrapper: {
-    marginBottom: 12, // ריווח בין השורות
-    alignItems: 'flex-start',
+    width: '48%',
+    marginBottom: 12,
+    alignItems: 'center',
   },
   image: {
-    width: imageSize * 0.8, // גודל מותאם לרוחב הקארד
-    height: imageSize * 0.8, // גובה מותאם
+    width: '100%',
+    height: imageSize*0.8,
     borderRadius: 10,
     resizeMode: 'cover',
   },
@@ -156,7 +157,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
-    alignSelf: 'center', // ממרכז את הכפתור מתחת לתמונה
+    alignSelf: 'center',
   },
   removeButtonText: {
     color: 'white',

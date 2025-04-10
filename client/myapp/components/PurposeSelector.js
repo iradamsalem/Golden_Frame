@@ -128,10 +128,12 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   title: {
-    fontSize: 22,
+    fontSize: 28, // Bigger font size
     fontWeight: 'bold',
-    marginBottom: 16,
+    marginBottom: 40, // Space below the title
     color: 'gold',
+    paddingTop: 40, // Space above the title
+    textAlign: 'center', // Center align the text
   },
   card: {
     flex: 1,
