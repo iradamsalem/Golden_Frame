@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -19,7 +20,9 @@ import {
 } from '../components/ui/card';
 import Toaster from '../components/ui/sonner'; // Import Toaster
 
+
 const LoginScreen = () => {
+  const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [loginEmail, setLoginEmail] = useState('');
@@ -48,6 +51,9 @@ const LoginScreen = () => {
 
     try {
       showToast('Login Successful! Welcome to Purpose Pics!', 'default');
+      setTimeout(() => {
+        navigation.navigate('UploadPhotos');
+      }, 500); // 1500 מילישניות = 1.5 שניות
     } catch (error) {
       showToast('Login Failed: Invalid credentials.', 'error');
     } finally {
@@ -65,7 +71,10 @@ const LoginScreen = () => {
 
     try {
       showToast('Signup Successful! Welcome to Purpose Pics!', 'default');
-    } catch (error) {
+      setTimeout(() => {
+        navigation.navigate('UploadPhotos');
+      }, 500); // 1500 מילישניות = 1.5 שניות
+        } catch (error) {
       showToast('Signup Failed: Invalid signup data.', 'error');
     } finally {
       setIsLoading(false);

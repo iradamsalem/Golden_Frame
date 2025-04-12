@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 const purposes = [
   {
@@ -78,40 +80,33 @@ const purposes = [
     ),
   },
 ];
+const PurposeSelector = () => {
+  const [selectedPurpose, setSelectedPurpose] = useState(null);
+  const navigation = useNavigation();
 
-const PurposeSelector = ({ selectedPurpose, onPurposeSelect }) => {
   const renderItem = ({ item }) => {
     const isSelected = selectedPurpose === item.id;
 
     return (
       <TouchableOpacity
-        style={[
-          styles.card,
-          isSelected ? styles.cardSelected : styles.cardUnselected,
-        ]}
-        onPress={() => onPurposeSelect(item.id)}
+        style={[styles.card, isSelected ? styles.cardSelected : styles.cardUnselected]}
+        onPress={() => {
+          setSelectedPurpose(item.id);
+          navigation.navigate('ResultsDisplay', { purpose: item.name });
+        }}
       >
-        <View
-          style={[
-            styles.iconWrapper,
-            isSelected ? styles.iconSelected : styles.iconUnselected,
-          ]}
-        >
+        <View style={[styles.iconWrapper, isSelected ? styles.iconSelected : styles.iconUnselected]}>
           {item.icon}
         </View>
-        <Text style={[styles.name, isSelected && styles.textSelected]}>
-          {item.name}
-        </Text>
-        <Text style={[styles.description, isSelected && styles.textSelected]}>
-          {item.description}
-        </Text>
+        <Text style={[styles.name, isSelected && styles.textSelected]}>{item.name}</Text>
+        <Text style={[styles.description, isSelected && styles.textSelected]}>{item.description}</Text>
       </TouchableOpacity>
     );
   };
 
   return (
-<View style={[styles.container, { backgroundColor: '#1a1a2e', flex: 1 }]}>
-<Text style={styles.title}>Select a Purpose</Text>
+    <View style={[styles.container, { backgroundColor: '#1a1a2e', flex: 1 }]}>
+      <Text style={styles.title}>Select a Purpose</Text>
       <FlatList
         data={purposes}
         renderItem={renderItem}
@@ -124,16 +119,14 @@ const PurposeSelector = ({ selectedPurpose, onPurposeSelect }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-  },
+  container: { padding: 16 },
   title: {
-    fontSize: 28, // Bigger font size
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 40, // Space below the title
+    marginBottom: 40,
     color: 'gold',
-    paddingTop: 40, // Space above the title
-    textAlign: 'center', // Center align the text
+    paddingTop: 40,
+    textAlign: 'center',
   },
   card: {
     flex: 1,

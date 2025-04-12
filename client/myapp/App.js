@@ -4,26 +4,32 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TestScreen from './screens/TestScreen';
 import UploadPhotosScreen from './screens/UploadPhotosScreen';
 import PurposeSelector from './components/PurposeSelector';
-
+import LoginScreen from './screens/LoginScreen';
+import ResultsDisplay from './components/ResultsDisplay'
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Test">
+      <Stack.Navigator initialRouteName="Login">
         <Stack.Screen
-          name="Test"
-          component={TestScreen}
+          name="Login"
+          component={LoginScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="UploadPhotos"
           component={UploadPhotosScreen}
-          options={{ headerShown: true, title: 'Upload Photos' }}
+          options={{ headerShown: false, title: 'Upload Photos' }}
         />
         <Stack.Screen
           name="PurposeSelector"
           component={PurposeSelector}
+          options={{ headerShown: false, title: 'Select Purpose' }}
+        />
+         <Stack.Screen
+          name="ResultsDisplay"
+          component={ResultsDisplay}
           options={{ headerShown: false, title: 'Select Purpose' }}
         />
       </Stack.Navigator>
