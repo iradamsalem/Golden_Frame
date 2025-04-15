@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, LayoutAnimation, Platform, UIManager, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
-// הפעלת אנימציה באנדרואיד
+
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-// קומפוננטת אקורדיון יחידה
+
 const AccordionItem = ({ title, children }) => {
   const [open, setOpen] = useState(false);
 
@@ -31,7 +31,6 @@ const AccordionItem = ({ title, children }) => {
   );
 };
 
-// הקומפוננטה הראשית שמכילה את כל האייטמים
 const Accordion = () => {
   return (
     <View>

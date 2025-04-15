@@ -2,25 +2,36 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
+/**
+ * ResultsDisplay Component
+ * This component displays the result of the user's photo selection and provides feedback
+ * based on the selected purpose. It also allows the user to try again with new photos.
+ */
 const ResultsDisplay = () => {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const { purpose } = route.params || {};
+  const navigation = useNavigation(); // Hook to navigate between screens
+  const route = useRoute(); // Hook to access route parameters
+  const { purpose } = route.params || {}; // Extract the selected purpose from route parameters
 
   return (
     <View style={styles.container}>
+      {/* Title of the screen */}
       <Text style={styles.title}>Your Perfect Photo</Text>
 
       <View style={styles.row}>
+        {/* Image display section */}
         <View style={styles.imageWrapper}>
           <Image
-            source={{ uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }}
+            source={{
+              uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            }} // Example image URL
             style={styles.image}
-            resizeMode="contain"
+            resizeMode="contain" // Ensure the image fits within the container
           />
         </View>
 
+        {/* Feedback and action section */}
         <View style={styles.feedbackWrapper}>
+          {/* Card displaying feedback */}
           <View style={styles.card}>
             <Text style={styles.cardTitle}>
               Why This Works for {purpose}
@@ -30,6 +41,7 @@ const ResultsDisplay = () => {
             </Text>
           </View>
 
+          {/* Button to navigate back to UploadPhotos screen */}
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.navigate('UploadPhotos')}
@@ -42,65 +54,66 @@ const ResultsDisplay = () => {
   );
 };
 
+// Styles for the ResultsDisplay component
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    backgroundColor: '#0a0a23',
-    borderRadius: 10,
-    flex: 1,
+    padding: 20, // Padding around the entire screen
+    backgroundColor: '#0a0a23', // Dark background color
+    borderRadius: 10, // Rounded corners for the container
+    flex: 1, // Allow the container to grow and fill available space
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 40,
-    color: 'gold',
-    paddingTop: 40,
-    textAlign: 'center',
+    fontSize: 28, // Font size for the title
+    fontWeight: 'bold', // Bold font weight
+    marginBottom: 40, // Space below the title
+    color: 'gold', // Gold text color
+    paddingTop: 40, // Space above the title
+    textAlign: 'center', // Center the title text
   },
   row: {
-    flexDirection: 'column',
+    flexDirection: 'column', // Arrange items in a column
   },
   imageWrapper: {
-    marginBottom: 20,
-    backgroundColor: '#1a1a2e',
-    padding: 8,
-    borderRadius: 10,
+    marginBottom: 20, // Space below the image
+    backgroundColor: '#1a1a2e', // Dark background color for the image wrapper
+    padding: 8, // Padding around the image
+    borderRadius: 10, // Rounded corners for the image wrapper
   },
   image: {
-    width: '100%',
-    height: 300,
-    borderRadius: 10,
+    width: '100%', // Full width of the container
+    height: 300, // Fixed height for the image
+    borderRadius: 10, // Rounded corners for the image
   },
   feedbackWrapper: {
-    gap: 12,
+    gap: 12, // Space between feedback elements
   },
   card: {
-    backgroundColor: '#2b2b3c',
-    padding: 16,
-    borderRadius: 10,
+    backgroundColor: '#2b2b3c', // Dark gray background for the feedback card
+    padding: 16, // Padding inside the card
+    borderRadius: 10, // Rounded corners for the card
   },
   cardTitle: {
-    fontSize: 18,
-    color: 'gold',
-    fontWeight: '600',
-    marginBottom: 8,
+    fontSize: 18, // Font size for the card title
+    color: 'gold', // Gold text color
+    fontWeight: '600', // Semi-bold font weight
+    marginBottom: 8, // Space below the title
   },
   cardText: {
-    color: '#ddd',
-    fontSize: 14,
+    color: '#ddd', // Light gray text color
+    fontSize: 14, // Font size for the feedback text
   },
   button: {
-    marginTop: 20,
-    alignSelf: 'center',
-    backgroundColor: 'gold',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 25,
+    marginTop: 20, // Space above the button
+    alignSelf: 'center', // Center the button horizontally
+    backgroundColor: 'gold', // Gold background color for the button
+    paddingVertical: 10, // Vertical padding inside the button
+    paddingHorizontal: 20, // Horizontal padding inside the button
+    borderRadius: 25, // Rounded corners for the button
   },
   buttonText: {
-    color: '#1a1a2e',
-    fontWeight: 'bold',
-    fontSize: 16,
+    color: '#1a1a2e', // Dark text color for contrast
+    fontWeight: 'bold', // Bold font weight
+    fontSize: 16, // Font size for the button text
   },
 });
 

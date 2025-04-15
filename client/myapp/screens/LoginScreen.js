@@ -18,22 +18,32 @@ import {
   CardDescription,
   CardFooter,
 } from '../components/ui/card';
-import Toaster from '../components/ui/sonner'; // Import Toaster
+import Toaster from '../components/ui/sonner'; // Import Toaster for displaying messages
 
-
+/**
+ * LoginScreen Component
+ * This component handles user login and signup functionality.
+ * It allows users to toggle between login and signup modes, validates input,
+ * and navigates to the UploadPhotos screen upon successful login or signup.
+ */
 const LoginScreen = () => {
-  const navigation = useNavigation();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
-  const [signupEmail, setSignupEmail] = useState('');
-  const [signupPassword, setSignupPassword] = useState('');
-  const [signupName, setSignupName] = useState('');
-  const [toastVisible, setToastVisible] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState('default');
+  const navigation = useNavigation(); // Hook to navigate between screens
+  const [isLoading, setIsLoading] = useState(false); // State to track loading status
+  const [isLogin, setIsLogin] = useState(true); // State to toggle between login and signup modes
+  const [loginEmail, setLoginEmail] = useState(''); // State for login email input
+  const [loginPassword, setLoginPassword] = useState(''); // State for login password input
+  const [signupEmail, setSignupEmail] = useState(''); // State for signup email input
+  const [signupPassword, setSignupPassword] = useState(''); // State for signup password input
+  const [signupName, setSignupName] = useState(''); // State for signup name input
+  const [toastVisible, setToastVisible] = useState(false); // State to control toaster visibility
+  const [toastMessage, setToastMessage] = useState(''); // State for toaster message
+  const [toastType, setToastType] = useState('default'); // State for toaster type (e.g., success, error)
 
+  /**
+   * showToast Function
+   * Displays a toast message with the specified message and type.
+   * The toast disappears after 3 seconds.
+   */
   const showToast = (message, type = 'default') => {
     setToastMessage(message);
     setToastType(type);
@@ -41,6 +51,11 @@ const LoginScreen = () => {
     setTimeout(() => setToastVisible(false), 3000); // Hide toast after 3 seconds
   };
 
+  /**
+   * handleLogin Function
+   * Validates login input and navigates to the UploadPhotos screen upon success.
+   * Displays error messages for invalid input or failed login attempts.
+   */
   const handleLogin = async () => {
     if (!loginEmail || !loginPassword) {
       showToast('Please enter both email and password.', 'error');
@@ -52,8 +67,8 @@ const LoginScreen = () => {
     try {
       showToast('Login Successful! Welcome to Purpose Pics!', 'default');
       setTimeout(() => {
-        navigation.navigate('UploadPhotos');
-      }, 500); // 1500 מילישניות = 1.5 שניות
+        navigation.navigate('UploadPhotos'); // Navigate to UploadPhotos screen
+      }, 500);
     } catch (error) {
       showToast('Login Failed: Invalid credentials.', 'error');
     } finally {
@@ -61,6 +76,11 @@ const LoginScreen = () => {
     }
   };
 
+  /**
+   * handleSignup Function
+   * Validates signup input and navigates to the UploadPhotos screen upon success.
+   * Displays error messages for invalid input or failed signup attempts.
+   */
   const handleSignup = async () => {
     if (!signupEmail || !signupPassword || !signupName) {
       showToast('Please enter email, password, and name.', 'error');
@@ -72,9 +92,9 @@ const LoginScreen = () => {
     try {
       showToast('Signup Successful! Welcome to Purpose Pics!', 'default');
       setTimeout(() => {
-        navigation.navigate('UploadPhotos');
-      }, 500); // 1500 מילישניות = 1.5 שניות
-        } catch (error) {
+        navigation.navigate('UploadPhotos'); // Navigate to UploadPhotos screen
+      }, 500);
+    } catch (error) {
       showToast('Signup Failed: Invalid signup data.', 'error');
     } finally {
       setIsLoading(false);
@@ -83,11 +103,14 @@ const LoginScreen = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      {/* App Logo */}
       <AppLogo style={styles.logo} />
 
+      {/* App Title and Subtitle */}
       <Text style={styles.title}>Purpose Pics</Text>
       <Text style={styles.subtitle}>Find your perfect photo for any purpose</Text>
 
+      {/* Card for Login/Signup Form */}
       <Card style={styles.card}>
         <CardHeader>
           <CardTitle style={styles.cardTitle}>{isLogin ? 'Login' : 'Sign Up'}</CardTitle>
@@ -99,6 +122,7 @@ const LoginScreen = () => {
         <CardContent>
           {isLogin ? (
             <>
+              {/* Login Form */}
               <View style={styles.section}>
                 <Text style={styles.label}>Email</Text>
                 <TextInput
@@ -138,6 +162,7 @@ const LoginScreen = () => {
             </>
           ) : (
             <>
+              {/* Signup Form */}
               <View style={styles.section}>
                 <Text style={styles.label}>Name</Text>
                 <TextInput
@@ -190,6 +215,7 @@ const LoginScreen = () => {
           )}
         </CardContent>
 
+        {/* Toggle Between Login and Signup */}
         <CardFooter>
           <TouchableOpacity onPress={() => setIsLogin(!isLogin)}>
             <Text style={styles.switchText}>
@@ -205,6 +231,7 @@ const LoginScreen = () => {
   );
 };
 
+// Styles for the LoginScreen component
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
