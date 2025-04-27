@@ -102,8 +102,22 @@ const PurposeSelector = () => {
     return (
       <TouchableOpacity
         style={[styles.card, isSelected ? styles.cardSelected : styles.cardUnselected]}
-        onPress={() => {
+        onPress={async() => {
           setSelectedPurpose(item.id); // Update selected state
+          try {
+            await fetch('https://your-server-url.com/api/purpose', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                purpose: item.name, // שולחים את שם המטרה לשרת
+              }),
+            });
+            console.log('Purpose sent successfully!');
+          } catch (error) {
+            console.error('Error sending purpose:', error);
+          }
           navigation.navigate('ResultsDisplay', { purpose: item.name }); // Navigate to another screen
         }}
       >
