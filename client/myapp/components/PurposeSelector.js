@@ -104,8 +104,23 @@ const PurposeSelector = () => {
         style={[styles.card, isSelected ? styles.cardSelected : styles.cardUnselected]}
         onPress={() => {
           setSelectedPurpose(item.id); // Update selected state
-          navigation.navigate('ResultsDisplay', { purpose: item.name }); // Navigate to another screen
-        }}
+        
+          fetch('http://192.168.0.103:3001/api/purpose', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              purpose: item.name,
+            }),
+          })
+          .then(() => {
+            navigation.navigate('ResultsDisplay', { purpose: item.name });
+          })
+          .catch((error) => {
+            console.error('Error sending purpose:', error);
+          });          
+        }} 
       >
         {/* Icon view */}
         <View style={[styles.iconWrapper, isSelected ? styles.iconSelected : styles.iconUnselected]}>
