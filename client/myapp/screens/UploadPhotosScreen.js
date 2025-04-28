@@ -44,12 +44,46 @@ const UploadPhotosScreen = () => {
    * Navigates to the PurposeSelector screen if at least one photo is uploaded.
    * Displays an error message if no photos are uploaded.
    */
-  const handleNavigateToPurposeSelector = () => {
-    if (selectedPhotos.length > 0) {
-      setErrorMessage('');
-      navigation.navigate('PurposeSelector', { photos: selectedPhotos }); // Pass photos to the PurposeSelector screen
-    } else {
+  const handleNavigateToPurposeSelector = async () => {
+    if (selectedPhotos.length === 0) {
       setErrorMessage('Please upload at least one photo before selecting a purpose.');
+      return;
+    }
+  
+    setErrorMessage('');  // Clear any previous error messages
+  
+    // Prepare form data for uploading photos
+    const formData = new FormData();
+    selectedPhotos.forEach((photo, index) => {
+      formData.append('photos', {
+        uri: photo.uri || photo,
+        name: `photo_${index}.jpg`,
+        type: 'image/jpeg',
+      });
+    });
+  
+    try {
+      const response = await fetch('http://192.162.8.136:3001/api/photos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to upload photos');
+      }
+  
+      const data = await response.json();
+      console.log('Photos uploaded successfully:', data);
+  
+      //  Navigate to PurposeSelector screen with uploaded photos
+      navigation.navigate('PurposeSelector', { photos: selectedPhotos });
+  
+    } catch (error) {
+      console.error('Error uploading photos:', error);
+      setErrorMessage('Failed to upload photos. Please try again.');
     }
   };
 
