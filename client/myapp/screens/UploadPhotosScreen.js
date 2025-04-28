@@ -63,7 +63,7 @@ const UploadPhotosScreen = () => {
     });
   
     try {
-      const response = await fetch('http://192.162.8.136:3001/api/photos', {
+      const response = await fetch('http://192.168.1.142:3001/api/photos', {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
