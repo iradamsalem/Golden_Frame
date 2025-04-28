@@ -1,0 +1,70 @@
+# Node modules (both for frontend and backend)
+node_modules/
+
+# Expo files
+.expo/
+.expo-shared/
+
+# React Native build files
+ios/
+android/
+build/
+dist/
+
+# Node.js build artifacts
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Node.js output
+coverage/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Binaries
+*.exe
+*.out
+*.app
+*.ipa
+*.apk
+
+# Misc
+.DS_Store
+Thumbs.db
+
+# VS Code settings
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Cache
+.cache/
+tmp/
+temp/
+babel-cache/
+metro-cache/
+
+# Webpack output
+web-build/
+public/
+
+# PM2 logs (if you ever use pm2 for running your Node server)
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Upload folders
+uploads/
+
+# ESLint cache
+.eslintcache
+
+# Jest cache
+jest-cache/
+jest-output/
