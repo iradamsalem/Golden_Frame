@@ -51,6 +51,8 @@ const UploadPhotosScreen = () => {
     }
   
     setErrorMessage('');  // Clear any previous error messages
+      //  Navigate to PurposeSelector screen with uploaded photos
+      navigation.navigate('PurposeSelector', { photos: selectedPhotos });
   
     // Prepare form data for uploading photos
     const formData = new FormData();
@@ -63,7 +65,7 @@ const UploadPhotosScreen = () => {
     });
   
     try {
-      const response = await fetch('http://192.168.1.142:3001/api/photos', {
+      const response = await fetch('http://192.162.8.136:3001/api/photos', {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -78,9 +80,7 @@ const UploadPhotosScreen = () => {
       const data = await response.json();
       console.log('Photos uploaded successfully:', data);
   
-      //  Navigate to PurposeSelector screen with uploaded photos
-      navigation.navigate('PurposeSelector', { photos: selectedPhotos });
-  
+    
     } catch (error) {
       console.error('Error uploading photos:', error);
       setErrorMessage('Failed to upload photos. Please try again.');
