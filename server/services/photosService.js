@@ -1,50 +1,44 @@
-import { getImageDimensions, calculateResolutionScore } from '../utils/resolutionUtils.js';
+import { analyzeFaceData } from '../utils/faceUtils.js';
+import { calculateResolution } from '../utils/resolutionUtils.js';
+import { calculateBrightness } from '../utils/brightnessUtils.js';
+import { calculateSharpness } from '../utils/sharpnessUtils.js';
+import { getScores } from '../analyzers/getScores.js';
+import {Analyzer} from '../analyzers/photoAnalyzer.js'
 
 export const processPhotos = async (photos) => {
-    console.log('Processing photos...');
+  console.log('🔄 Processing photos...');
 
-    const enrichedPhotos = photos.map((photo) => {
-        const { width, height } = getImageDimensions(photo.buffer);
+  const enrichedPhotos = [];
 
-        return {
-            originalName: photo.originalname,
-            size: photo.size,
-            mimeType: photo.mimetype,
-            bufferLength: photo.buffer.length,
-            width: width,
-            height: height,
-            rawResolution: width * height,
-        };
-    });
+  for (const photo of photos) {
+    console.log(`📸 Analyzing photo: ${photo.originalname}`);
 
-    const maxResolution = Math.max(...enrichedPhotos.map(photo => photo.rawResolution));
+    const rawResolution = calculateResolution(photo.buffer);
+    const brightness = await calculateBrightness(photo.buffer);
+    const sharpness = await calculateSharpness(photo.buffer);
+    const faceData = await analyzeFaceData(photo.buffer);
 
-    const photoDataMap = new Map();   
-    const photoScoresMap = new Map(); 
+    const enriched = {
+      buffer: photo.buffer,
+      mimeType: photo.mimetype,
+      originalName: photo.originalname,
+      size: photo.size,
+      bufferLength: photo.buffer.length,
+      rawResolution,
+      brightness,
+      sharpness,
+      ...faceData
+    };
 
-    enrichedPhotos.forEach((photo) => {
-        const resolutionScore = calculateResolutionScore(photo.width, photo.height, maxResolution);
+    enrichedPhotos.push(enriched);
+  }
 
-        
-        photoDataMap.set(photo.originalName, {
-            originalName: photo.originalName,
-            size: photo.size,
-            mimeType: photo.mimeType,
-            bufferLength: photo.bufferLength,
-            width: photo.width,
-            height: photo.height,
-            
-            resolution: resolutionScore,
-        });
+  const photoScoresMap = await getScores(enrichedPhotos);
 
-        photoScoresMap.set(photo.originalName, {
-            resolution: resolutionScore,
-            
-        });
-    });
+  const result=Analyzer(photoScoresMap);
+  
+  console.log("photos : ",result);
 
-    console.log('✅ Photo Data Map:', Array.from(photoDataMap.entries()));
-    console.log('✅ Photo Scores Map:', Array.from(photoScoresMap.entries()));
-
-    return { photoDataMap, photoScoresMap };
+  console.log('🎯 Processed and scored photos:', Array.from(photoScoresMap.entries()));
+  return result;
 };
