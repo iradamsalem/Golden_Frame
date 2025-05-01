@@ -10,7 +10,7 @@ const ResultsDisplay = () => {
   const [imageUri, setImageUri] = useState(null);
 
   useEffect(() => {
-    fetch('http://192.162.8.136:3001/api/photos/selected-image')
+    fetch('http://192.168.1.142:3001/api/photos/selected-image')
       .then((res) => res.json())
       .then((data) => {
         setImageUri(data.image); // image is base64 data URI

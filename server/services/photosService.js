@@ -3,6 +3,7 @@ import { calculateResolution } from '../utils/resolutionUtils.js';
 import { calculateBrightness } from '../utils/brightnessUtils.js';
 import { calculateSharpness } from '../utils/sharpnessUtils.js';
 import { getScores } from '../analyzers/getScores.js';
+import {Analyzer} from '../analyzers/photoAnalyzer.js'
 
 export const processPhotos = async (photos) => {
   console.log('🔄 Processing photos...');
@@ -18,9 +19,10 @@ export const processPhotos = async (photos) => {
     const faceData = await analyzeFaceData(photo.buffer);
 
     const enriched = {
+      buffer: photo.buffer,
+      mimeType: photo.mimetype,
       originalName: photo.originalname,
       size: photo.size,
-      mimeType: photo.mimetype,
       bufferLength: photo.buffer.length,
       rawResolution,
       brightness,
@@ -33,6 +35,10 @@ export const processPhotos = async (photos) => {
 
   const photoScoresMap = await getScores(enrichedPhotos);
 
+  const result=Analyzer(photoScoresMap);
+  
+  console.log("photos : ",result);
+
   console.log('🎯 Processed and scored photos:', Array.from(photoScoresMap.entries()));
-  return photoScoresMap;
+  return result;
 };
