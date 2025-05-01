@@ -11,6 +11,8 @@ export const getScores = async (photos) => {
     const sharpness = Math.max(1, Math.round((photo.sharpness / maxSharpness) * 100));
 
     photoScoresMap.set(photo.originalName, {
+      buffer:photo.buffer,
+      mimeType: photo.mimetype,
       resolution,
       brightness,
       sharpness,

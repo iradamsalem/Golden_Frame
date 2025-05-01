@@ -5,11 +5,11 @@ import { processPhotos } from '../services/photosService.js';
 
 export const uploadPhotos = async (req, res) => {
   try {
-    const result = await processPhotos(req.files);
+    const bestPhotos = await processPhotos(req.files);
 
     // Check if the result is an array of processed images
-    lastUploadedBuffer = req.files[0].buffer;
-    lastUploadedMime = req.files[0].mimetype;
+    lastUploadedBuffer = bestPhotos[0].buffer;
+    lastUploadedMime = bestPhotos[0].mimetype;
 
     res.status(200).json({
       message: 'Photos uploaded successfully!',

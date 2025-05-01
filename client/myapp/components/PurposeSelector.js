@@ -106,7 +106,7 @@ const PurposeSelector = () => {
           setSelectedPurpose(item.id); // Update selected state
           navigation.navigate('ResultsDisplay', { purpose: item.name });
     
-          fetch('http://192.162.8.136:3001/api/purpose', {
+          fetch('http://192.168.1.142:3001/api/purpose', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
