@@ -1,15 +1,11 @@
-let lastUploadedBuffer = null;
-let lastUploadedMime = null;
+let processedPhotos = [];
 import { processPhotos } from '../services/photosService.js';
 
 
 export const uploadPhotos = async (req, res) => {
   try {
     const bestPhotos = await processPhotos(req.files);
-
-    // Check if the result is an array of processed images
-    lastUploadedBuffer = bestPhotos[0].buffer;
-    lastUploadedMime = bestPhotos[0].mimetype;
+    processedPhotos = bestPhotos; // Store all processed photos
 
     res.status(200).json({
       message: 'Photos uploaded successfully!',
@@ -22,18 +18,22 @@ export const uploadPhotos = async (req, res) => {
 
 export const getSelectedImage = (req, res) => {
   try {
-    if (!lastUploadedBuffer) {
-      return res.status(404).json({ message: 'No image available' });
+    if (!processedPhotos || processedPhotos.length === 0) {
+      return res.status(404).json({ message: 'No images available' });
     }
 
-    const base64Image = `data:${lastUploadedMime};base64,${lastUploadedBuffer.toString('base64')}`;
+    const photos = processedPhotos.map((photo, index) => ({
+      rank: index + 1,
+      image: `data:${photo.mimeType};base64,${photo.buffer.toString('base64')}`,
+      score: photo.score
+    }));
 
     res.status(200).json({
-      message: 'Selected image retrieved successfully!',
-      image: base64Image,
+      message: 'Photos retrieved successfully!',
+      photos: photos,
     });
   } catch (error) {
-    console.error('Error retrieving selected image:', error);
-    res.status(500).json({ message: 'Failed to retrieve selected image.' });
+    console.error('Error retrieving photos:', error);
+    res.status(500).json({ message: 'Failed to retrieve photos.' });
   }
 };
