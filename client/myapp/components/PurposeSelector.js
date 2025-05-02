@@ -104,9 +104,8 @@ const PurposeSelector = () => {
         style={[styles.card, isSelected ? styles.cardSelected : styles.cardUnselected]}
         onPress={() => {
           setSelectedPurpose(item.id); // Update selected state
-          navigation.navigate('ResultsDisplay', { purpose: item.name });
-    
-          fetch('http://192.168.1.142:3001/api/purpose', {
+        
+          fetch('http://192.168.1.241:3001/api/purpose', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -115,7 +114,9 @@ const PurposeSelector = () => {
               purpose: item.name,
             }),
           })
-          
+          .then(() => {
+            navigation.navigate('ResultsDisplay', { purpose: item.name });
+          })
           .catch((error) => {
             console.error('Error sending purpose:', error);
           });          
