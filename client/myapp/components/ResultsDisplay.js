@@ -12,7 +12,7 @@ const ResultsDisplay = () => {
   const [photos, setPhotos] = useState([]);
 
   useEffect(() => {
-    fetch('http://192.168.1.241:3001/api/photos/selected-image')
+    fetch('http://192.162.8.136:3001/api/photos/selected-image')
       .then((res) => res.json())
       .then((data) => {
         setPhotos(data.photos);
@@ -151,6 +151,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
+    marginBottom: 50,
     alignSelf: 'center',
     backgroundColor: 'gold',
     paddingVertical: 10,
