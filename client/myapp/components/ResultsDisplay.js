@@ -1,26 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 const ResultsDisplay = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { purpose } = route.params || {};
-
-// Initializes a state variable `photos` as an empty array and provides the `setPhotos` function
-// to update it. Used in React to track and modify the list of photos.
-  const [photos, setPhotos] = useState([]);
-
-  useEffect(() => {
-    fetch('http://192.162.8.136:3001/api/photos/selected-image')
-      .then((res) => res.json())
-      .then((data) => {
-        setPhotos(data.photos);
-      })
-      .catch((error) => {
-        console.error('Error fetching photos:', error);
-      });
-  }, []);
+  const { photos, purpose } = route.params || {};
 
   return (
     <View style={styles.container}>

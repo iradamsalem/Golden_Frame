@@ -28,6 +28,9 @@ export const getSelectedImage = (req, res) => {
       score: photo.score
     }));
 
+    // Clear the processedPhotos array after sending the results
+    processedPhotos = [];
+
     res.status(200).json({
       message: 'Photos retrieved successfully!',
       photos: photos,

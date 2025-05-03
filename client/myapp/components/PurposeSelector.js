@@ -103,8 +103,8 @@ const PurposeSelector = () => {
       <TouchableOpacity
         style={[styles.card, isSelected ? styles.cardSelected : styles.cardUnselected]}
         onPress={() => {
-          setSelectedPurpose(item.id); // Update selected state
-          navigation.navigate('ResultsDisplay', { purpose: item.name });
+          setSelectedPurpose(item.id);
+          // First make the POST request
           fetch('http://192.162.8.136:3001/api/purpose', {
             method: 'POST',
             headers: {
@@ -114,12 +114,14 @@ const PurposeSelector = () => {
               purpose: item.name,
             }),
           })
-        
-        
+          .then(() => {
+            // After successful POST, navigate to Loading screen
+            navigation.navigate('Loading', { purpose: item.name });
+          })
           .catch((error) => {
             console.error('Error sending purpose:', error);
-          });          
-        }} 
+          });
+        }}
       >
         {/* Icon view */}
         <View style={[styles.iconWrapper, isSelected ? styles.iconSelected : styles.iconUnselected]}>
