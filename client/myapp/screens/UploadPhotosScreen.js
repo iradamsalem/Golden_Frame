@@ -82,7 +82,7 @@ const UploadPhotosScreen = () => {
   
     
     } catch (error) {
-      console.error('Error uploading photos:', error);
+      console.error('Error uploading photos:', error, JSON.stringify(error));
       setErrorMessage('Failed to upload photos. Please try again.');
     }
   };

@@ -1,11 +1,33 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 const ResultsDisplay = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { photos, purpose } = route.params || {};
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [entryTime, setEntryTime] = useState(null);
+
+  useEffect(() => {
+    setEntryTime(Date.now());
+  }, []);
+
+  const handlePress = () => {
+    const now = Date.now();
+    const timeSinceEntry = now - entryTime;
+
+    if (timeSinceEntry < 5000) {
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+        navigation.navigate('UploadPhotos');
+      }, 4000);
+    } else {
+      navigation.navigate('UploadPhotos');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -17,7 +39,7 @@ const ResultsDisplay = () => {
             <View style={styles.rankBadge}>
               <Text style={styles.rankText}>{photo.rank}</Text>
             </View>
-            
+
             <View style={styles.imageWrapper}>
               <Image
                 source={{ uri: photo.image }}
@@ -43,12 +65,13 @@ const ResultsDisplay = () => {
           </Text>
         </View>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('UploadPhotos')}
-        >
-          <Text style={styles.buttonText}>Try Again with New Photos</Text>
-        </TouchableOpacity>
+        {isLoading ? (
+          <ActivityIndicator size="large" color="gold" style={{ marginTop: 20 }} />
+        ) : (
+          <TouchableOpacity style={styles.button} onPress={handlePress}>
+            <Text style={styles.buttonText}>Try Again with New Photos</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

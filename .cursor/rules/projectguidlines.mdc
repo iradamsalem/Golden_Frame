@@ -3,63 +3,19 @@ description:
 globs: 
 alwaysApply: true
 ---
-You are an expert in JavaScript, React Native, Expo, and Node.js.
+You are an expert in JavaScript, React Native, Expo, and Mobile App Development, with a Node.js backend.
 
-App Purpose:
-- The app helps users select the most optimal photo for specific purposes, such as:
-  - Instagram
-  - LinkedIn
-  - Resumes (CVs)
-- Users choose a category, upload multiple photos, and the app filters and recommends the best one.
-- Filtering works in two steps:
-  1. Basic pre-filtering using our custom logic (size, brightness, focus, composition).
-  2. AI-based advanced filtering using trained models and heuristics.
+Code Style and Structure:
+Write concise, clean, and maintainable JavaScript code.
 
-Workflow Requirements:
-- DO NOT modify working code or logic unless explicitly asked.
-- ALWAYS ask before making any change.
-- Apply changes gradually: one file at a time.
-- Every change must come with a clear explanation of why and what.
-- Never apply global refactors or rename things automatically without approval.
+Use functional components and React hooks; avoid class components.
 
-React Native (Frontend):
-- Use **functional components** only, no class components.
-- Use arrow functions for components.
-- Follow this file structure:
-  - `components/` – reusable UI components
-    - e.g. `components/button/index.js`, `styles.js`, `types.js` (if needed)
-  - `app/` – all screens (pages)
-    - e.g. `app/search/index.js`, `styles.js`, optional `_layout.js`
-- Separate logic and styles:
-  - Logic/UI → `index.js`
-  - Styling → `styles.js`
-- Always check `components/` before writing a new UI element.
-- Use `KeyboardAvoidingView` when dealing with inputs.
-- Always use `formik` for forms and `yup` for validation.
+Create components using arrow functions and use clear prop destructuring for readability.
 
-Naming Conventions:
-- Use camelCase for functions and variables.
-- Use PascalCase for component names.
-- Use kebab-case (lowercase with hyphens) for folders.
+Ensure all components are modular, reusable, and easy to maintain.
 
-Styling:
-- No inline styles.
-- Use `StyleSheet.create()` or Styled Components, consistently.
-- Support responsive layouts (orientation and screen size).
+Organize files by feature, grouping related components, logic, and styles together.
 
-Node.js (Backend):
-- Use Express.js or similar.
-- Keep controllers, services, and routes in separate files.
-- Place all API logic in `services/apis/`
-- Use async/await and proper error handling.
-- Do not mix logic across layers (e.g., no DB logic inside routes).
-- Use `joi` or `zod` to validate all user input.
-- Document each API briefly in comments.
+Always destructure props and objects where possible.
 
-AI Logic:
-- AI filtering must be kept in a separate service.
-- AI models should not be hardcoded inside routes or screens.
-- The system should be able to compare photos and determine which one is best suited for the selected category.
-- Prompting the model should include category context, e.g., "Find the most professional-looking photo for LinkedIn."
-
-
+Split UI code and styles

@@ -6,7 +6,7 @@ import UploadPhotosScreen from './screens/UploadPhotosScreen';
 import PurposeSelector from './components/PurposeSelector';
 import LoginScreen from './screens/LoginScreen';
 import ResultsDisplay from './components/ResultsDisplay';
-import LoadingScreen from './app/loading';
+import LoadingScreen from './screens/LoadingScreen';
 
 const Stack = createNativeStackNavigator();
 
