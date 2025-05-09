@@ -19,7 +19,7 @@ const LoadingScreen = () => {
           try {
             // GET request to fetch processed photos
             // This endpoint returns the photos that have been analyzed
-            const response = await fetch('http://192.162.8.136:3001/api/photos/selected-image', {
+            const response = await fetch('http://10.100.102.16:3001/api/photos/selected-image', {
               method: 'GET', // Explicitly stating this is a GET request
               headers: {
                 'Accept': 'application/json',

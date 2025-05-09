@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 const ResultsDisplay = () => {
@@ -65,13 +73,17 @@ const ResultsDisplay = () => {
           </Text>
         </View>
 
-        {isLoading ? (
-          <ActivityIndicator size="large" color="gold" style={{ marginTop: 20 }} />
-        ) : (
-          <TouchableOpacity style={styles.button} onPress={handlePress}>
-            <Text style={styles.buttonText}>Try Again with New Photos</Text>
-          </TouchableOpacity>
-        )}
+        <View style={styles.buttonContainer}>
+          {isLoading ? (
+            <View style={styles.button}>
+              <ActivityIndicator size="small" color="#1a1a2e" />
+            </View>
+          ) : (
+            <TouchableOpacity style={styles.button} onPress={handlePress}>
+              <Text style={styles.buttonText}>Try Again with New Photos</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </View>
   );
@@ -157,14 +169,22 @@ const styles = StyleSheet.create({
     color: '#ddd',
     fontSize: 14,
   },
-  button: {
+  buttonContainer: {
+    alignItems: 'center',
     marginTop: 20,
-    marginBottom: 50,
-    alignSelf: 'center',
+    marginBottom: 20,
+    height: 50, 
+    paddingBottom:100,
+  },
+  button: {
     backgroundColor: 'gold',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 50,
+    minWidth: 250,
   },
   buttonText: {
     color: '#1a1a2e',

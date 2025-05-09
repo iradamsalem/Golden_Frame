@@ -105,7 +105,7 @@ const PurposeSelector = () => {
         onPress={() => {
           setSelectedPurpose(item.id);
           // First make the POST request
-          fetch('http://192.162.8.136:3001/api/purpose', {
+          fetch('http://10.100.102.16:3001/api/purpose', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
