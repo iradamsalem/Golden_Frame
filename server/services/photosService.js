@@ -1,9 +1,9 @@
-import { analyzeFaceData } from '../utils/faceUtils.js';
+import { analyzeImage } from '../utils/visionUtils.js';
 import { calculateResolution } from '../utils/resolutionUtils.js';
 import { calculateBrightness } from '../utils/brightnessUtils.js';
 import { calculateSharpness } from '../utils/sharpnessUtils.js';
 import { getScores } from '../analyzers/getScores.js';
-import {Analyzer} from '../analyzers/photoAnalyzer.js'
+import { Analyzer } from '../analyzers/photoAnalyzer.js';
 
 export const processPhotos = async (photos) => {
   console.log('🔄 Processing photos...');
@@ -16,7 +16,35 @@ export const processPhotos = async (photos) => {
     const rawResolution = calculateResolution(photo.buffer);
     const brightness = await calculateBrightness(photo.buffer);
     const sharpness = await calculateSharpness(photo.buffer);
-    const faceData = await analyzeFaceData(photo.buffer);
+
+    const visionData = await analyzeImage(photo.buffer);
+
+    // ניתוח פנים
+    const faceAnnotations = visionData.faceAnnotations?.[0];
+    const numFaces = visionData.faceAnnotations?.length || 0;
+    const faceScore = numFaces === 1 ? 100 : numFaces >= 5 ? 30 : numFaces === 0 ? 1 : 100 - (numFaces - 1) * 15;
+    const alignment = faceAnnotations?.rollAngle && Math.abs(faceAnnotations.rollAngle) < 5 ? 95 : 40;
+    const expression = faceAnnotations ? 65 : 25;
+    const crop = numFaces === 1 ? 90 : 60;
+    const filters = numFaces === 1 ? 70 : 40;
+
+    // סיווגים כלליים
+    const labels = visionData.labelAnnotations?.map(l => ({
+      description: l.description,
+      score: l.score
+    })) || [];
+
+    // אתרים מפורסמים
+    const landmarks = visionData.landmarkAnnotations?.map(l => ({
+      description: l.description,
+      score: l.score
+    })) || [];
+
+    // צבעים דומיננטיים
+    const colors = visionData.imagePropertiesAnnotation?.dominantColors?.colors?.map(c => ({
+      rgb: c.color,
+      score: c.score
+    })) || [];
 
     const enriched = {
       buffer: photo.buffer,
@@ -27,18 +55,34 @@ export const processPhotos = async (photos) => {
       rawResolution,
       brightness,
       sharpness,
-      ...faceData
+      faceScore,
+      alignment,
+      expression,
+      crop,
+      filters,
+      numFaces,
+      labels,
+      landmarks,
+      colors
     };
+    console.log("🧠 Enriched photo data:", {
+      originalName: enriched.originalName,
+      faceScore: enriched.faceScore,
+      alignment: enriched.alignment,
+      brightness: enriched.brightness,
+      sharpness: enriched.sharpness,
+      labels: enriched.labels,
+      landmarks: enriched.landmarks,
+      colors: enriched.colors,
+      rawResolution: enriched.rawResolution
+    });
 
     enrichedPhotos.push(enriched);
   }
 
   const photoScoresMap = await getScores(enrichedPhotos);
+  const result = Analyzer(photoScoresMap);
 
-  const result=Analyzer(photoScoresMap);
-  
-  console.log("photos : ",result);
-
-  console.log('🎯 Processed and scored photos:', Array.from(photoScoresMap.entries()));
+  console.log("📊 Final results with full enrichment:", result);
   return result;
 };
