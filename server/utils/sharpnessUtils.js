@@ -1,5 +1,10 @@
 import sharp from 'sharp';
 
+/**
+ * calculateSharpness Function
+ * 
+ * Calculates the sharpness of an image.
+ */
 
 export const calculateSharpness = async (buffer) => {
   try {

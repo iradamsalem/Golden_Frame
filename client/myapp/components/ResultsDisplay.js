@@ -10,6 +10,16 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
+/**
+ * ResultsDisplay Component
+ * 
+ * Displays a list of ranked photos based on a previously selected purpose.
+ * Each photo is shown with its ranking, image, and score. Includes an explanation
+ * card and a button to retry the photo selection process.
+ * 
+ * @component
+ */
+
 const ResultsDisplay = () => {
   const navigation = useNavigation();
   const route = useRoute();

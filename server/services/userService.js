@@ -2,6 +2,18 @@ import bcrypt from 'bcryptjs';
 import { registerSchema, loginSchema } from '../validators/userSchema.js';
 import { createUser, findByEmail } from '../storage/userStorage.js';
 
+/**
+ * registerUser Service
+ * 
+ * Registers a new user in the system.
+ * 
+ * @async
+ * @function
+ * @param {Object} data - User registration data
+ * @returns {Promise<Object>} New user object
+ */
+
+  
 // Register a new user
 export const registerUser = async (data) => {
     // 1. Validate input data using Zod schema

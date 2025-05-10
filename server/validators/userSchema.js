@@ -1,6 +1,12 @@
 import {z} from 'zod';
 
-// Validates the user registration data
+/**
+ * userSchema 
+ * 
+ * Defines the schemas for user registration and login.
+ * 
+ * @module userSchema
+ */
 export const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),

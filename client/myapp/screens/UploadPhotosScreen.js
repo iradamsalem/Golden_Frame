@@ -85,7 +85,7 @@ const UploadPhotosScreen = () => {
 
       const data = await response.json();
       console.log('Photos uploaded successfully:', data);
-      return true; // הצליח
+      return true; // success
 
     } catch (error) {
       attempt++;
@@ -93,10 +93,10 @@ const UploadPhotosScreen = () => {
       const isNetworkError = error.message.includes('Network request failed');
 
       if (isNetworkError && attempt < maxAttempts) {
-        // שגיאת תקשורת – ננסה שוב בלי הדפסה
+        // Network error – try again without logging
         continue;
       } else {
-        // שגיאה אמיתית או שכבר ניסינו מספיק פעמים
+        //network error
         if (!isNetworkError) {
           console.error('Error uploading photos:', error);
         }

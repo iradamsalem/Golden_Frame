@@ -1,3 +1,11 @@
+
+/**
+ * getScores Function
+ * 
+ * Normalizes various quality metrics (resolution, brightness, sharpness) for a set of photos
+ * and returns a Map keyed by each photo's `originalName`. Each value in the Map is an object
+ * containing the normalized scores and relevant metadata for the photo.
+ */
 export const getScores = async (photos) => {
   const maxResolution = Math.max(...photos.map(p => p.rawResolution));
   const maxBrightness = Math.max(...photos.map(p => p.brightness));

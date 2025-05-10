@@ -1,3 +1,12 @@
+
+/**
+ * analyzeInstagram Function
+ * 
+ * Scores a set of photos based on criteria optimized for Instagram.
+ * The function calculates a weighted score for each photo using features such as resolution,
+ * brightness, sharpness, face quality, expression, alignment, filters, labels, and landmarks.  
+ */
+
 export const analyzeInstagram = (photoScoresMap) => {
   const weights = {
     resolution: 0.15,

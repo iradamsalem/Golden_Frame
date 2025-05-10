@@ -2,6 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { API_BASE_URL } from '../config';
+
+/**
+ * LoadingScreen Component
+ * 
+ * Displays a loading screen with a status message and a purpose.
+ * 
+ * @component
+ */
 const LoadingScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();

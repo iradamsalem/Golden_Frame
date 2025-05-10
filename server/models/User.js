@@ -1,5 +1,12 @@
 import mongoose from 'mongoose';
 
+/**
+ * User Schema
+ * 
+ * Represents a user in the system.
+ *   
+ */
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,

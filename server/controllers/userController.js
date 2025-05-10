@@ -1,5 +1,10 @@
 import { registerUser, loginUser } from '../services/userService.js';
 
+/**
+ * register Controller
+ * 
+ * Handles user registration requests.
+ */
 export const register = async (req, res) => {
   console.log('[register] Request received:', req.body);
   try {
@@ -11,6 +16,11 @@ export const register = async (req, res) => {
   }
 };
 
+/**
+ * login Controller
+ * 
+ * Handles user login requests.
+ */
 export const login = async (req, res) => {
   console.log('[login] Request received:', req.body);
   try {

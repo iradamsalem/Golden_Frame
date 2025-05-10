@@ -5,6 +5,13 @@ import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 
+/**
+ * visionUtils
+ * 
+ * Utility functions for vision analysis using Google Vision API.
+ * 
+ * @module visionUtils
+ */
 dotenv.config();
 
 const API_KEY = process.env.GOOGLE_API_KEY;;

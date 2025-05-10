@@ -7,6 +7,14 @@ import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { API_BASE_URL } from '../config';
 
+/**
+ * PurposeSelector Component
+ * 
+ * Displays a list of purposes with their details and icons.
+ * 
+ * @component
+ */
+
 // List of purposes with their details and icons
 const purposes = [
   {
@@ -91,6 +99,13 @@ const purposes = [
     ),
   },
 ];
+
+/**
+ * PurposeSelector Component
+ * 
+ * Displays a list of purposes with their details and icons.
+ *   
+ */ 
 
 const PurposeSelector = () => {
   const [selectedPurpose, setSelectedPurpose] = useState(null); // Track selected purpose

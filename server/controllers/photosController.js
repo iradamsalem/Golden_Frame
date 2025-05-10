@@ -1,6 +1,12 @@
 let processedPhotos = [];
 import { processPhotos } from '../services/photosService.js';
 
+/**
+ * uploadPhotos Controller
+ * 
+ * Handles photo upload requests, processes the uploaded photos through analysis pipeline,
+ * and stores the results for later retrieval.
+ */ 
 
 export const uploadPhotos = async (req, res) => {
   try {
@@ -16,6 +22,12 @@ export const uploadPhotos = async (req, res) => {
   }
 };
 
+/**
+ * getSelectedImage Controller
+ * 
+ * Retrieves the processed and analyzed photos, converts them to base64 format,
+ * and returns them ranked by score. Clears the stored photos after sending.
+*/
 export const getSelectedImage = (req, res) => {
   try {
     if (!processedPhotos || processedPhotos.length === 0) {
