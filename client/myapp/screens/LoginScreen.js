@@ -19,6 +19,7 @@ import {
   CardFooter,
 } from '../components/ui/card';
 import Toaster from '../components/ui/sonner'; // Import Toaster for displaying messages
+import { API_BASE_URL } from '../config';
 
 /**
  * LoginScreen Component
@@ -46,6 +47,7 @@ const LoginScreen = () => {
    * Displays a toast message with the specified message and type.
    * The toast disappears after 3 seconds.
    */
+  
   const showToast = (message, type = 'default') => {
     setToastMessage(message);
     setToastType(type);
@@ -76,7 +78,7 @@ const LoginScreen = () => {
     
   try {
     console.log('About to send login request');
-    const response = await fetch('http://10.100.102.16:3001/api/users/login', {
+    const response = await fetch(`${API_BASE_URL}/api/users/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -95,7 +97,8 @@ const LoginScreen = () => {
     showToast('Login Successful! Welcome back.', 'success');
     setTimeout(() => {
       navigation.navigate('UploadPhotos');
-    }, 1500);
+    }, 500
+  );
   } catch (error) {
     showToast('Something went wrong. Please try again.', 'error');
   } finally {
@@ -126,7 +129,7 @@ const LoginScreen = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://10.100.102.16:3001/api/users/register', {
+      const response = await fetch(`${API_BASE_URL}/api/users/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -146,7 +149,7 @@ const LoginScreen = () => {
       showToast('Signup Successful! Welcome to Purpose Pics!', 'success');
       setTimeout(() => {
         navigation.navigate('UploadPhotos');
-      }, 1500);
+      }, 500);
     } catch (error) {
       showToast('Something went wrong. Please try again later.', 'error');
     } finally {

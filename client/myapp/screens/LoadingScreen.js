@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-
+import { API_BASE_URL } from '../config';
 const LoadingScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -19,7 +19,7 @@ const LoadingScreen = () => {
           try {
             // GET request to fetch processed photos
             // This endpoint returns the photos that have been analyzed
-            const response = await fetch('http://10.100.102.16:3001/api/photos/selected-image', {
+            const response = await fetch(`${API_BASE_URL}/api/photos/selected-image`, {
               method: 'GET', // Explicitly stating this is a GET request
               headers: {
                 'Accept': 'application/json',

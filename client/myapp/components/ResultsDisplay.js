@@ -16,27 +16,16 @@ const ResultsDisplay = () => {
   const { photos, purpose } = route.params || {};
 
   const [isLoading, setIsLoading] = useState(false);
-  const [entryTime, setEntryTime] = useState(null);
 
-  useEffect(() => {
-    setEntryTime(Date.now());
-  }, []);
-
+  
   const handlePress = () => {
-    const now = Date.now();
-    const timeSinceEntry = now - entryTime;
-
-    if (timeSinceEntry < 5000) {
-      setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
-        navigation.navigate('UploadPhotos');
-      }, 4000);
-    } else {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
       navigation.navigate('UploadPhotos');
-    }
+    }, 1000); 
   };
-
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Your Photos Ranked</Text>

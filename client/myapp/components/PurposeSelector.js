@@ -5,6 +5,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native
 import Svg, { Path } from 'react-native-svg';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { API_BASE_URL } from '../config';
 
 // List of purposes with their details and icons
 const purposes = [
@@ -105,7 +106,7 @@ const PurposeSelector = () => {
         onPress={() => {
           setSelectedPurpose(item.id);
           // First make the POST request
-          fetch('http://10.100.102.16:3001/api/purpose', {
+          fetch(`${API_BASE_URL}/api/purpose`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
