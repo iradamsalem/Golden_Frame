@@ -10,13 +10,12 @@ dotenv.config();
 const API_KEY = process.env.GOOGLE_API_KEY;;
 const API_URL = `https://vision.googleapis.com/v1/images:annotate?key=${API_KEY}`;
 
-
-// ממיר buffer ל־Base64
+// Converts a buffer to a Base64 string
 const bufferToBase64 = (buffer) => {
   return buffer.toString('base64');
 };
 
-// מנתח תמונה אחת
+// Analyzes a single image
 export const analyzeImage = async (buffer) => {
   const base64Image = bufferToBase64(buffer);
 
