@@ -15,11 +15,10 @@ export const processPhotos = async (photos) => {
 
     const rawResolution = calculateResolution(photo.buffer);
     const brightness = await calculateBrightness(photo.buffer);
-    const sharpness = await calculateSharpness(photo.buffer);
-
+    const { sharpness, variance } = await calculateSharpness(photo.buffer);
     const visionData = await analyzeImage(photo.buffer);
 
-    // ניתוח פנים
+    
     const faceAnnotations = visionData.faceAnnotations?.[0];
     const numFaces = visionData.faceAnnotations?.length || 0;
     const faceScore = numFaces === 1 ? 100 : numFaces >= 5 ? 30 : numFaces === 0 ? 1 : 100 - (numFaces - 1) * 15;
@@ -28,19 +27,16 @@ export const processPhotos = async (photos) => {
     const crop = numFaces === 1 ? 90 : 60;
     const filters = numFaces === 1 ? 70 : 40;
 
-    // סיווגים כלליים
     const labels = visionData.labelAnnotations?.map(l => ({
       description: l.description,
       score: l.score
     })) || [];
 
-    // אתרים מפורסמים
     const landmarks = visionData.landmarkAnnotations?.map(l => ({
       description: l.description,
       score: l.score
     })) || [];
 
-    // צבעים דומיננטיים
     const colors = visionData.imagePropertiesAnnotation?.dominantColors?.colors?.map(c => ({
       rgb: c.color,
       score: c.score
@@ -55,6 +51,7 @@ export const processPhotos = async (photos) => {
       rawResolution,
       brightness,
       sharpness,
+      variance,
       faceScore,
       alignment,
       expression,
@@ -71,11 +68,16 @@ export const processPhotos = async (photos) => {
       alignment: enriched.alignment,
       brightness: enriched.brightness,
       sharpness: enriched.sharpness,
+      variance: enriched.variance,
+      crop: enriched.crop,
+      filters: enriched.filters,
+      expression: enriched.expression,
+      numFaces: enriched.numFaces,
       labels: enriched.labels,
       landmarks: enriched.landmarks,
-      colors: enriched.colors,
-      rawResolution: enriched.rawResolution
+      colors: enriched.colors
     });
+    
 
     enrichedPhotos.push(enriched);
   }
