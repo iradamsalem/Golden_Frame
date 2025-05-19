@@ -1,27 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+
+/**
+ * ResultsDisplay Component
+ * 
+ * Displays a list of ranked photos based on a previously selected purpose.
+ * Each photo is shown with its ranking, image, and score. Includes an explanation
+ * card and a button to retry the photo selection process.
+ * 
+ * @component
+ */
 
 const ResultsDisplay = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { purpose } = route.params || {};
+  const { photos, purpose } = route.params || {};
 
-// Initializes a state variable `photos` as an empty array and provides the `setPhotos` function
-// to update it. Used in React to track and modify the list of photos.
-  const [photos, setPhotos] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    fetch('http://192.168.1.241:3001/api/photos/selected-image')
-      .then((res) => res.json())
-      .then((data) => {
-        setPhotos(data.photos);
-      })
-      .catch((error) => {
-        console.error('Error fetching photos:', error);
-      });
-  }, []);
-
+  
+  const handlePress = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      navigation.navigate('UploadPhotos');
+    }, 1000); 
+  };
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Your Photos Ranked</Text>
@@ -32,7 +46,7 @@ const ResultsDisplay = () => {
             <View style={styles.rankBadge}>
               <Text style={styles.rankText}>{photo.rank}</Text>
             </View>
-            
+
             <View style={styles.imageWrapper}>
               <Image
                 source={{ uri: photo.image }}
@@ -58,12 +72,17 @@ const ResultsDisplay = () => {
           </Text>
         </View>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('UploadPhotos')}
-        >
-          <Text style={styles.buttonText}>Try Again with New Photos</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          {isLoading ? (
+            <View style={styles.button}>
+              <ActivityIndicator size="small" color="#1a1a2e" />
+            </View>
+          ) : (
+            <TouchableOpacity style={styles.button} onPress={handlePress}>
+              <Text style={styles.buttonText}>Try Again with New Photos</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </View>
   );
@@ -149,13 +168,22 @@ const styles = StyleSheet.create({
     color: '#ddd',
     fontSize: 14,
   },
-  button: {
+  buttonContainer: {
+    alignItems: 'center',
     marginTop: 20,
-    alignSelf: 'center',
+    marginBottom: 20,
+    height: 50, 
+    paddingBottom:100,
+  },
+  button: {
     backgroundColor: 'gold',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 50,
+    minWidth: 250,
   },
   buttonText: {
     color: '#1a1a2e',

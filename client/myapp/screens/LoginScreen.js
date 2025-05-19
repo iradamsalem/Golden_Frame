@@ -19,6 +19,7 @@ import {
   CardFooter,
 } from '../components/ui/card';
 import Toaster from '../components/ui/sonner'; // Import Toaster for displaying messages
+import { API_BASE_URL } from '../config';
 
 /**
  * LoginScreen Component
@@ -26,6 +27,7 @@ import Toaster from '../components/ui/sonner'; // Import Toaster for displaying 
  * It allows users to toggle between login and signup modes, validates input,
  * and navigates to the UploadPhotos screen upon successful login or signup.
  */
+
 const LoginScreen = () => {
   const navigation = useNavigation(); // Hook to navigate between screens
   const [isLoading, setIsLoading] = useState(false); // State to track loading status
@@ -39,11 +41,13 @@ const LoginScreen = () => {
   const [toastMessage, setToastMessage] = useState(''); // State for toaster message
   const [toastType, setToastType] = useState('default'); // State for toaster type (e.g., success, error)
 
+  
   /**
    * showToast Function
    * Displays a toast message with the specified message and type.
    * The toast disappears after 3 seconds.
    */
+  
   const showToast = (message, type = 'default') => {
     setToastMessage(message);
     setToastType(type);
@@ -61,41 +65,93 @@ const LoginScreen = () => {
       showToast('Please enter both email and password.', 'error');
       return;
     }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(loginEmail)) {
+      showToast('Invalid email address.', 'error');
+      return;
+    }
+    
+  
 
     setIsLoading(true);
 
-    try {
-      showToast('Login Successful! Welcome to Purpose Pics!', 'default');
-      setTimeout(() => {
-        navigation.navigate('UploadPhotos'); // Navigate to UploadPhotos screen
-      }, 500);
-    } catch (error) {
-      showToast('Login Failed: Invalid credentials.', 'error');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    
+  try {
+    console.log('About to send login request');
+    const response = await fetch(`${API_BASE_URL}/api/users/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: loginEmail,
+        password: loginPassword,
+      }),
+    });
 
+    const data = await response.json();
+
+    if (!response.ok) {
+      showToast(data.error || 'Login failed', 'error');
+      return;
+    }
+
+    showToast('Login Successful! Welcome back.', 'success');
+    setTimeout(() => {
+      navigation.navigate('UploadPhotos');
+    }, 500
+  );
+  } catch (error) {
+    showToast('Something went wrong. Please try again.', 'error');
+  } finally {
+    setIsLoading(false);
+  }
+};
   /**
    * handleSignup Function
    * Validates signup input and navigates to the UploadPhotos screen upon success.
    * Displays error messages for invalid input or failed signup attempts.
    */
   const handleSignup = async () => {
-    if (!signupEmail || !signupPassword || !signupName) {
-      showToast('Please enter email, password, and name.', 'error');
+    if (!signupName || signupName.trim().length < 2) {
+      showToast('Name must be at least 2 characters.', 'error');
       return;
     }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(signupEmail)) {
+      showToast('Please enter a valid email address.', 'error');
+      return;
+    }  
+    if (!signupPassword || signupPassword.length < 6) {
+      showToast('Password must be at least 6 characters.', 'error');
+      return;
+    }
+    console.log('Validation passed, attempting login'); // לוג שני
 
     setIsLoading(true);
 
     try {
-      showToast('Signup Successful! Welcome to Purpose Pics!', 'default');
+      const response = await fetch(`${API_BASE_URL}/api/users/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: signupName,
+          email: signupEmail,
+          password: signupPassword,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        showToast(data.error || 'Signup failed', 'error');
+        return;
+      }
+  
+      showToast('Signup Successful! Welcome to Purpose Pics!', 'success');
       setTimeout(() => {
-        navigation.navigate('UploadPhotos'); // Navigate to UploadPhotos screen
+        navigation.navigate('UploadPhotos');
       }, 500);
     } catch (error) {
-      showToast('Signup Failed: Invalid signup data.', 'error');
+      showToast('Something went wrong. Please try again later.', 'error');
     } finally {
       setIsLoading(false);
     }

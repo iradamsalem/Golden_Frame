@@ -1,0 +1,21 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+You are an expert in JavaScript, React Native, Expo, and Mobile App Development, with a Node.js backend.
+
+Code Style and Structure:
+Write concise, clean, and maintainable JavaScript code.
+
+Use functional components and React hooks; avoid class components.
+
+Create components using arrow functions and use clear prop destructuring for readability.
+
+Ensure all components are modular, reusable, and easy to maintain.
+
+Organize files by feature, grouping related components, logic, and styles together.
+
+Always destructure props and objects where possible.
+
+Split UI code and styles

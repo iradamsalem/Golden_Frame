@@ -5,6 +5,15 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native
 import Svg, { Path } from 'react-native-svg';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { API_BASE_URL } from '../config';
+
+/**
+ * PurposeSelector Component
+ * 
+ * Displays a list of purposes with their details and icons.
+ * 
+ * @component
+ */
 
 // List of purposes with their details and icons
 const purposes = [
@@ -91,6 +100,13 @@ const purposes = [
   },
 ];
 
+/**
+ * PurposeSelector Component
+ * 
+ * Displays a list of purposes with their details and icons.
+ *   
+ */ 
+
 const PurposeSelector = () => {
   const [selectedPurpose, setSelectedPurpose] = useState(null); // Track selected purpose
   const navigation = useNavigation(); // React Navigation hook
@@ -103,9 +119,9 @@ const PurposeSelector = () => {
       <TouchableOpacity
         style={[styles.card, isSelected ? styles.cardSelected : styles.cardUnselected]}
         onPress={() => {
-          setSelectedPurpose(item.id); // Update selected state
-        
-          fetch('http://192.168.1.241:3001/api/purpose', {
+          setSelectedPurpose(item.id);
+          // First make the POST request
+          fetch(`${API_BASE_URL}/api/purpose`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -115,12 +131,13 @@ const PurposeSelector = () => {
             }),
           })
           .then(() => {
-            navigation.navigate('ResultsDisplay', { purpose: item.name });
+            // After successful POST, navigate to Loading screen
+            navigation.navigate('Loading', { purpose: item.name });
           })
           .catch((error) => {
             console.error('Error sending purpose:', error);
-          });          
-        }} 
+          });
+        }}
       >
         {/* Icon view */}
         <View style={[styles.iconWrapper, isSelected ? styles.iconSelected : styles.iconUnselected]}>

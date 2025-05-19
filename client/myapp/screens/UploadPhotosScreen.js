@@ -11,6 +11,7 @@ import {
 import { Card, CardHeader, CardContent } from '../components/ui/card';
 import PhotoUploader from '../components/PhotoUploader';
 import { useNavigation } from '@react-navigation/native';
+import { API_BASE_URL } from '../config';
 
 // Calculate screen dimensions and image sizes
 const screenWidth = Dimensions.get('window').width; // Get the screen width
@@ -64,28 +65,48 @@ const UploadPhotosScreen = () => {
       });
     });
   
+    
+  let attempt = 0;
+  const maxAttempts = 2;
+
+  while (attempt < maxAttempts) {
     try {
-      const response = await fetch('http://192.168.1.241:3001/api/photos', {
+      const response = await fetch(`${API_BASE_URL}/api/photos`, {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
         },
         body: formData,
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to upload photos');
       }
-  
+
       const data = await response.json();
       console.log('Photos uploaded successfully:', data);
-  
-    
+      return true; // success
+
     } catch (error) {
-      console.error('Error uploading photos:', error);
-      setErrorMessage('Failed to upload photos. Please try again.');
+      attempt++;
+
+      const isNetworkError = error.message.includes('Network request failed');
+
+      if (isNetworkError && attempt < maxAttempts) {
+        // Network error – try again without logging
+        continue;
+      } else {
+        //network error
+        if (!isNetworkError) {
+          console.error('Error uploading photos:', error);
+        }
+        setErrorMessage('Failed to upload photos. Please try again.');
+        return false;
+      }
     }
-  };
+  }
+};
+
 
   return (
     <View style={styles.container}>

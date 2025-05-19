@@ -5,7 +5,9 @@ import TestScreen from './screens/TestScreen';
 import UploadPhotosScreen from './screens/UploadPhotosScreen';
 import PurposeSelector from './components/PurposeSelector';
 import LoginScreen from './screens/LoginScreen';
-import ResultsDisplay from './components/ResultsDisplay'
+import ResultsDisplay from './components/ResultsDisplay';
+import LoadingScreen from './screens/LoadingScreen';
+
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -27,10 +29,15 @@ const App = () => {
           component={PurposeSelector}
           options={{ headerShown: false, title: 'Select Purpose' }}
         />
-         <Stack.Screen
+        <Stack.Screen
+          name="Loading"
+          component={LoadingScreen}
+          options={{ headerShown: false, title: 'Processing Photos' }}
+        />
+        <Stack.Screen
           name="ResultsDisplay"
           component={ResultsDisplay}
-          options={{ headerShown: false, title: 'Select Purpose' }}
+          options={{ headerShown: false, title: 'Results' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
