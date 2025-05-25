@@ -4,6 +4,9 @@ import { calculateBrightness } from '../utils/brightnessUtils.js';
 import { calculateSharpness } from '../utils/sharpnessUtils.js';
 import { getScores } from '../analyzers/getScores.js';
 import { Analyzer } from '../analyzers/photoAnalyzer.js';
+import { inferLabels } from '../analyzers/labelEnricher.js';
+
+
 
 export const processPhotos = async (photos) => {
   console.log('🔄 Processing photos...');
@@ -27,10 +30,12 @@ export const processPhotos = async (photos) => {
     const crop = numFaces === 1 ? 90 : 60;
     const filters = numFaces === 1 ? 70 : 40;
 
-    const labels = visionData.labelAnnotations?.map(l => ({
+    const rawLabels = visionData.labelAnnotations?.map(l => ({
       description: l.description,
       score: l.score
     })) || [];
+    
+    const labels = inferLabels(rawLabels);
 
     const landmarks = visionData.landmarkAnnotations?.map(l => ({
       description: l.description,

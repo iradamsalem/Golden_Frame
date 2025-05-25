@@ -1,11 +1,12 @@
-// Service function to process and save the received purpose
-export async function savePurpose(purpose) {
-    console.log('Saving purpose inside service:', purpose);
-  
-    // Future logic can be added here: database storage, processing, etc.
-    // For now, we return a mock object
-    return {
-      savedPurpose: purpose,
-    };
-  }
-  
+// services/purpose.service.js
+
+let currentPurpose = 'default';
+
+export function savePurpose(purpose) {
+  currentPurpose = purpose;
+  console.log('✅ Purpose saved:', currentPurpose);
+}
+
+export function getSavedPurpose() {
+  return currentPurpose;
+}

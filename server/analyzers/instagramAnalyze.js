@@ -63,15 +63,19 @@ export const analyzeInstagram = (photoScoresMap) => {
       (scores.numFaces ?? 0) * weights.numFaces +
       landmarkScore * weights.landmarks;
 
+    const labelScore = scores.labelScore ?? 50; 
+
     let faceBonus = 0;
     if (scores.numFaces > 0) faceBonus += 0.05;
     if (scores.numFaces === 1) faceBonus += 0.1;
 
-    const totalScore = Math.min(100, Math.max(1, baseScore + faceBonus));
+    const combinedScore = baseScore * 0.6 + labelScore * 0.4 + faceBonus;
+    const totalScore = Math.min(100, Math.max(1, combinedScore));
 
     console.log(`📷 Photo: ${photoName}`);
     console.log(`   Sharpness: ${scores.sharpness}, Variance: ${scores.variance}, ColorScore: ${colorScoreValue}`);
-    console.log(`   Final score: ${totalScore.toFixed(2)}\n`);
+    console.log(`   LabelScore: ${labelScore}`);
+    console.log(`   Final combined score (60% base + 40% labels): ${totalScore.toFixed(2)}\n`);
 
     results.push({
       name: photoName,
