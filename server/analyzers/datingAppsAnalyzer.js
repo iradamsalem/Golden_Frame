@@ -82,7 +82,8 @@ export const analyzeDatingApp = (photoScoresMap) => {
       name: photoName,
       score: totalScore,
       buffer: scores.buffer,
-      mimeType: scores.mimeType
+      mimeType: scores.mimeType,
+      labels: scores.labels?.map(l => l.description) || [] 
     });
   }
 

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -21,11 +21,33 @@ const ResultsDisplay = () => {
   const { photos = [], purpose } = route.params || {};
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [likedPhotos, setLikedPhotos] = useState([]);
+  const currentIndexRef = useRef(0);
+  const [likedIndexes, setLikedIndexes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showEndScreen, setShowEndScreen] = useState(false);
+  const [hideCard, setHideCard] = useState(false);
 
   const position = useRef(new Animated.ValueXY()).current;
+
+  useEffect(() => {
+    currentIndexRef.current = currentIndex;
+  }, [currentIndex]);
+
+  useEffect(() => {
+    if (showEndScreen) {
+      console.log('🟡 Liked indexes:', likedIndexes);
+
+      const likedLabels = likedIndexes.flatMap(index => {
+        const photo = photos[index];
+        console.log(`📸 Index ${index} labels:`, photo?.labels || []);
+        return photo?.labels || [];
+      });
+
+      const uniqueLabels = [...new Set(likedLabels)];
+      console.log('🧠 Positive labels from liked photos (raw):', likedLabels);
+      console.log('🔗 All liked labels (deduplicated):', uniqueLabels);
+    }
+  }, [showEndScreen]);
 
   const handlePress = () => {
     setIsLoading(true);
@@ -35,38 +57,35 @@ const ResultsDisplay = () => {
     }, 1000);
   };
 
-  const handleCardAdvance = (liked = false) => {
-    if (liked && photos[currentIndex]) {
-      setLikedPhotos((prev) => [...prev, photos[currentIndex]]);
-    }
-
-    setCurrentIndex((prevIndex) => {
-      const nextIndex = prevIndex + 1;
-
-      if (nextIndex >= photos.length) {
-        setShowEndScreen(true);
-        return prevIndex;
-      }
-
-      return nextIndex;
-    });
-  };
-
   const swipe = (direction) => {
     const liked = direction === 'right';
-    handleCardAdvance(liked);
+    const indexNow = currentIndexRef.current;
 
-    const toValue = {
-      x: liked ? SCREEN_WIDTH + 100 : -SCREEN_WIDTH - 100,
-      y: 0,
-    };
+    setHideCard(true); // ⛔️ הסתרה מיידית
 
     Animated.timing(position, {
-      toValue,
+      toValue: {
+        x: liked ? SCREEN_WIDTH + 100 : -SCREEN_WIDTH - 100,
+        y: 0,
+      },
       duration: 200,
       useNativeDriver: false,
     }).start(() => {
       position.setValue({ x: 0, y: 0 });
+
+      const nextIndex = indexNow + 1;
+
+      if (liked && photos[indexNow]) {
+        setLikedIndexes((prev) => [...prev, indexNow]);
+      }
+
+      if (nextIndex >= photos.length) {
+        setShowEndScreen(true);
+      } else {
+        currentIndexRef.current = nextIndex;
+        setCurrentIndex(nextIndex);
+        setTimeout(() => setHideCard(false), 10); // ✅ הצגת הקלף הבא
+      }
     });
   };
 
@@ -114,6 +133,7 @@ const ResultsDisplay = () => {
         style={[
           styles.cardContainer,
           {
+            opacity: hideCard ? 0 : 1,
             transform: [
               {
                 rotate: position.x.interpolate({
@@ -188,6 +208,7 @@ const ResultsDisplay = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

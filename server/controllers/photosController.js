@@ -37,7 +37,8 @@ export const getSelectedImage = (req, res) => {
     const photos = processedPhotos.map((photo, index) => ({
       rank: index + 1,
       image: `data:${photo.mimeType};base64,${photo.buffer.toString('base64')}`,
-      score: photo.score
+      score: photo.score,
+      labels: photo.labels || [] 
     }));
 
     // Clear the processedPhotos array after sending the results
