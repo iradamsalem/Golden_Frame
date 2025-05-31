@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { UserContext } from '../contexts/UserContext';
-import Avatar from '../components/ui/avatar'; // ודא שהנתיב נכון לפי מיקום הקובץ שלך
+import Avatar from '../components/ui/avatar'; 
 
 const UserHeader = () => {
   const { user, logout } = useContext(UserContext);

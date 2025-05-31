@@ -4,7 +4,7 @@ import multer from 'multer';
 
 const router = express.Router();
 
-const upload = multer().any(); // קולט גם קבצים וגם שדות טקסט
+const upload = multer().any(); 
 
 router.post('/', upload, uploadPhotos);
 router.get('/selected-image', getSelectedImage);

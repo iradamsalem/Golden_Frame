@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 
 import photosRoutes from './routes/photos.routes.js'; 
 import userRoutes from './routes/userRoutes.js';
-import favoriteLabelRoutes from './routes/favoriteLabelRoutes.js'; // ✅ חדש
+import favoriteLabelRoutes from './routes/favoriteLabelRoutes.js'; 
 
 dotenv.config();
 

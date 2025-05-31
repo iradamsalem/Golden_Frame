@@ -6,7 +6,7 @@ import Svg, { Path } from 'react-native-svg';
 import { useState ,useContext} from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { API_BASE_URL } from '../config';
-import { UserContext } from '../contexts/UserContext'; // ייבוא הקונטקסט
+import { UserContext } from '../contexts/UserContext'; 
 
 
 
@@ -104,12 +104,10 @@ const PurposeSelector = () => {
       return;
     }
 
-    // 👇 מעבר מיידי למסך הטעינה
     navigation.navigate('Loading', {
       purpose: item.name,
     });
 
-    // ⬇️ שליחה ברקע – בלי לחכות לתגובה
     const formData = new FormData();
     formData.append('purpose', item.name);
     formData.append('email', user.email);

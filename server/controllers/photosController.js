@@ -4,7 +4,6 @@ let processedPhotos = [];
 
 export const uploadPhotos = async (req, res) => {
   try {
-    // כאן ניגש לשדות הטקסטואליים שהגיעו ב-body
     console.log('Full req.body:', req.body);
 
     const { email, purpose } = req.body;
@@ -21,10 +20,9 @@ export const uploadPhotos = async (req, res) => {
       return res.status(400).json({ error: 'No photos uploaded.' });
     }
 
-    // מעביר את הקבצים יחד עם המייל והמטרה לסרביס לעיבוד
     const bestPhotos = await processPhotos(req.files, purpose, email);
 
-    processedPhotos = bestPhotos; // שומר תוצאות לעיבוד עתידי
+    processedPhotos = bestPhotos; 
 
     res.status(200).json({ message: 'Photos uploaded and processed successfully!' });
   } catch (error) {
@@ -46,7 +44,6 @@ export const getSelectedImage = (req, res) => {
       labels: photo.labels || [],
     }));
 
-    // מאפס את התמונה המעובדת אחרי השליחה
     processedPhotos = [];
 
     res.status(200).json({

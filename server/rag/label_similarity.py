@@ -6,20 +6,17 @@ import torch
 from transformers import AutoTokenizer, AutoModel
 from sklearn.metrics.pairwise import cosine_similarity
 
-# נתיבים
+
 base_dir = os.path.dirname(__file__)
 embeddings_path = os.path.join(base_dir, "label_embeddings.json")
 user_labels_path = os.path.join(base_dir, "user_labels.json")  # ✅
 
-# טעינת embedding של קטגוריות
 with open(embeddings_path, "r", encoding="utf-8") as f:
     category_embeddings = json.load(f)
 
-# טעינת תוויות משתמש
 with open(user_labels_path, "r", encoding="utf-8") as f:
     user_data = json.load(f)  # כולל: username, purpose, labels
 
-# הגדרת המודל
 MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 model = AutoModel.from_pretrained(MODEL_NAME)
@@ -70,10 +67,8 @@ def main():
         }))
         sys.exit(1)
 
-    # הדפסה ללוג
     print(f"✅ Calculating for category: {category}", file=sys.stderr)
 
-    # תוויות משתמש
     user_labels = user_data.get("labels", [])
     if user_labels:
         print(f"👤 User labels found: {len(user_labels)}", file=sys.stderr)
