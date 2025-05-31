@@ -1,27 +1,22 @@
 import { analyzeInstagram } from "./instagramAnalyze.js";
 import { analyzeLinkedin } from "./linkedinAnalyze.js";
-import { analyzeDatingApp } from "./datingAppsAnalyzer.js"
+import { analyzeDatingApp } from "./datingAppsAnalyzer.js";
 import { analyzeResumePhoto } from "./resumeAnalyze.js";
 import { analyzeFacebook } from "./facebookAnalyze.js";
 import { analyzeTwitter } from "./twitterAnlayze.js";
 import { analyzeProfessionalPhoto } from "./professionalAnalyze.js";
-import { getSavedPurpose } from "../services/purpose.service.js";
+import { normalizePurpose } from "../utils/normalizePurpose.js";
 
 /**
  * Analyzer function to score photos based on selected purpose.
  * @param {Map<string, Object>} photoScoresMap 
+ * @param {string} rawPurpose 
  * @returns {Array<Object>} Sorted analyzed results
  */
-export const Analyzer = (photoScoresMap) => {
-  const purposeRaw = getSavedPurpose();
-  const purpose = (typeof purposeRaw === 'string' ? purposeRaw : '').toLowerCase().trim();
+export const Analyzer = (photoScoresMap, rawPurpose) => {
+  const purpose = normalizePurpose(rawPurpose);
 
-  let normalizedPurpose = purpose;
-  if (normalizedPurpose === 'twitter/x') normalizedPurpose = 'twitter';
-  if (normalizedPurpose === 'dating apps') normalizedPurpose = 'dating';
-  if (normalizedPurpose === 'proffesional') normalizedPurpose = 'professional'; // typo fallback
-
-  switch (normalizedPurpose) {
+  switch (purpose) {
     case 'instagram':
       console.log('📷 Analyzing for Instagram...');
       return analyzeInstagram(photoScoresMap);
@@ -30,7 +25,7 @@ export const Analyzer = (photoScoresMap) => {
       console.log('👔 Analyzing for LinkedIn...');
       return analyzeLinkedin(photoScoresMap);
 
-    case 'dating':
+    case 'datingApps':
       console.log('❤️ Analyzing for Dating Apps...');
       return analyzeDatingApp(photoScoresMap);
 

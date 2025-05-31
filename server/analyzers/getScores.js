@@ -1,8 +1,6 @@
-import { getSavedPurpose } from "../services/purpose.service.js";
 import { runLabelSimilarity } from "../utils/runLabelSimilarity.js";
 
-export const getScores = async (photos) => {
-  const purpose = getSavedPurpose(); 
+export const getScores = async (photos,purpose) => {
   console.log('🎯 Purpose for scoring:', purpose);
   const maxResolution = Math.max(...photos.map(p => p.rawResolution));
   const maxBrightness = Math.max(...photos.map(p => p.brightness));

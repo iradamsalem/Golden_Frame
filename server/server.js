@@ -3,7 +3,6 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
-import purposeRoutes from './routes/purpose.routes.js';
 import photosRoutes from './routes/photos.routes.js'; 
 import userRoutes from './routes/userRoutes.js';
 import favoriteLabelRoutes from './routes/favoriteLabelRoutes.js'; // ✅ חדש
@@ -18,7 +17,6 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api/purpose', purposeRoutes);
 app.use('/api/photos', photosRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/favorite-labels', favoriteLabelRoutes); 

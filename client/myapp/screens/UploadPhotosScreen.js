@@ -11,7 +11,6 @@ import {
 import { Card, CardHeader, CardContent } from '../components/ui/card';
 import PhotoUploader from '../components/PhotoUploader';
 import { useNavigation } from '@react-navigation/native';
-import { API_BASE_URL } from '../config';
 import { UserContext } from '../contexts/UserContext';
 import Avatar from '../components/ui/avatar';
 
@@ -40,63 +39,21 @@ const UploadPhotosScreen = () => {
     });
   };
 
-  const handleNavigateToPurposeSelector = async () => {
+  const handleNavigateToPurposeSelector = () => {
     if (selectedPhotos.length === 0) {
       setErrorMessage('Please upload at least one photo before selecting a purpose.');
       return;
     }
 
     setErrorMessage('');
+    // פשוט לנווט עם התמונות בלבד
     navigation.navigate('PurposeSelector', { photos: selectedPhotos });
-
-    const formData = new FormData();
-    selectedPhotos.forEach((photo, index) => {
-      formData.append('photos', {
-        uri: photo.uri || photo,
-        name: `photo_${index}.jpg`,
-        type: 'image/jpeg',
-      });
-    });
-
-    let attempt = 0;
-    const maxAttempts = 2;
-
-    while (attempt < maxAttempts) {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/photos`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to upload photos');
-        }
-
-        const data = await response.json();
-        console.log('Photos uploaded successfully:', data);
-        return true;
-      } catch (error) {
-        attempt++;
-        const isNetworkError = error.message.includes('Network request failed');
-        if (isNetworkError && attempt < maxAttempts) {
-          continue;
-        } else {
-          console.error('Error uploading photos:', error);
-          setErrorMessage('Failed to upload photos. Please try again.');
-          return false;
-        }
-      }
-    }
   };
 
   const firstLetter = user?.name?.charAt(0).toUpperCase() || '?';
 
   return (
     <View style={styles.container}>
-      {/* Header מותאם אישית בתוך המסך */}
       <View style={styles.header}>
         <Avatar fallbackText={firstLetter} size={40} />
         <View style={styles.userInfo}>

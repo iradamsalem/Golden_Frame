@@ -1,3 +1,5 @@
+import fs from 'fs/promises';
+import path from 'path';
 import { analyzeImage } from '../utils/visionUtils.js';
 import { calculateResolution } from '../utils/resolutionUtils.js';
 import { calculateBrightness } from '../utils/brightnessUtils.js';
@@ -5,11 +7,42 @@ import { calculateSharpness } from '../utils/sharpnessUtils.js';
 import { getScores } from '../analyzers/getScores.js';
 import { Analyzer } from '../analyzers/photoAnalyzer.js';
 import { inferLabels } from '../analyzers/labelEnricher.js';
+import { normalizePurpose } from '../utils/normalizePurpose.js';
+import { getFavoriteLabelsByPurpose } from '../storage/userStorage.js'; // התאמת הנתיב למקום הפונקציה שלך
 
+const RAG_FOLDER = path.resolve('./rag');
+const USER_LABELS_FILE = path.join(RAG_FOLDER, 'user_labels.json');
 
+async function writeUserLabelsToFile(username, purpose) {
+  try {
+    const normalizedPurpose = normalizePurpose(purpose);
+    const labels = await getFavoriteLabelsByPurpose(username, normalizedPurpose) || [];
 
-export const processPhotos = async (photos) => {
+    const dataToSave = {
+      username,
+      purpose: normalizedPurpose,
+      labels,
+      timestamp: new Date().toISOString(),
+    };
+
+    // אם תיקיית rag כבר קיימת אין צורך ליצור, אז אפשר להשאיר את זה או להסיר לפי מצבך:
+    // await fs.mkdir(RAG_FOLDER, { recursive: true });
+
+    await fs.writeFile(USER_LABELS_FILE, JSON.stringify(dataToSave, null, 2), 'utf-8');
+
+    console.log(`✅ User labels file updated for user "${username}" and purpose "${normalizedPurpose}"`);
+  } catch (error) {
+    console.error('❌ Failed to write user labels file:', error);
+  }
+}
+
+export const processPhotos = async (photos, purpose, username) => {
+  // קודם כל: כתיבת קובץ התוויות לפי משתמש ומטרה
+  await writeUserLabelsToFile(username, purpose);
+
   console.log('🔄 Processing photos...');
+  console.log('Purpose:', purpose);
+  console.log('Username:', username);
 
   const enrichedPhotos = [];
 
@@ -21,7 +54,6 @@ export const processPhotos = async (photos) => {
     const { sharpness, variance } = await calculateSharpness(photo.buffer);
     const visionData = await analyzeImage(photo.buffer);
 
-    
     const faceAnnotations = visionData.faceAnnotations?.[0];
     const numFaces = visionData.faceAnnotations?.length || 0;
     const faceScore = numFaces === 1 ? 100 : numFaces >= 5 ? 30 : numFaces === 0 ? 1 : 100 - (numFaces - 1) * 15;
@@ -67,6 +99,7 @@ export const processPhotos = async (photos) => {
       landmarks,
       colors
     };
+
     console.log("🧠 Enriched photo data:", {
       originalName: enriched.originalName,
       faceScore: enriched.faceScore,
@@ -82,13 +115,12 @@ export const processPhotos = async (photos) => {
       landmarks: enriched.landmarks,
       colors: enriched.colors
     });
-    
 
     enrichedPhotos.push(enriched);
   }
-
-  const photoScoresMap = await getScores(enrichedPhotos);
-  const result = Analyzer(photoScoresMap);
+  console.log(purpose);
+  const photoScoresMap = await getScores(enrichedPhotos,purpose);
+  const result = Analyzer(photoScoresMap,purpose);
 
   console.log("📊 Final results with full enrichment:", result);
   return result;
