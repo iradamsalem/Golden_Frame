@@ -1,52 +1,54 @@
-let processedPhotos = [];
 import { processPhotos } from '../services/photosService.js';
 
-/**
- * uploadPhotos Controller
- * 
- * Handles photo upload requests, processes the uploaded photos through analysis pipeline,
- * and stores the results for later retrieval.
- */ 
+let processedPhotos = [];
 
 export const uploadPhotos = async (req, res) => {
   try {
-    const bestPhotos = await processPhotos(req.files);
-    processedPhotos = bestPhotos; // Store all processed photos
+    console.log('Full req.body:', req.body);
 
-    res.status(200).json({
-      message: 'Photos uploaded successfully!',
-    });
+    const { email, purpose } = req.body;
+
+    console.log('Received email:', email);
+    console.log('Received purpose:', purpose);
+    console.log('Number of files:', req.files.length);
+
+    if (!email || !purpose) {
+      return res.status(400).json({ error: 'Missing email or purpose in the request body.' });
+    }
+
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: 'No photos uploaded.' });
+    }
+
+    const bestPhotos = await processPhotos(req.files, purpose, email);
+
+    processedPhotos = bestPhotos; 
+
+    res.status(200).json({ message: 'Photos uploaded and processed successfully!' });
   } catch (error) {
     console.error('Error processing photos:', error);
-    res.status(500).json({ error: 'Failed to process photos' });
+    res.status(500).json({ error: 'Failed to process photos.' });
   }
 };
 
-/**
- * getSelectedImage Controller
- * 
- * Retrieves the processed and analyzed photos, converts them to base64 format,
- * and returns them ranked by score. Clears the stored photos after sending.
-*/
 export const getSelectedImage = (req, res) => {
   try {
     if (!processedPhotos || processedPhotos.length === 0) {
-      return res.status(404).json({ message: 'No images available' });
+      return res.status(404).json({ message: 'No images available.' });
     }
 
     const photos = processedPhotos.map((photo, index) => ({
       rank: index + 1,
       image: `data:${photo.mimeType};base64,${photo.buffer.toString('base64')}`,
       score: photo.score,
-      labels: photo.labels || [] 
+      labels: photo.labels || [],
     }));
 
-    // Clear the processedPhotos array after sending the results
     processedPhotos = [];
 
     res.status(200).json({
       message: 'Photos retrieved successfully!',
-      photos: photos,
+      photos,
     });
   } catch (error) {
     console.error('Error retrieving photos:', error);

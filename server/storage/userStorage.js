@@ -1,12 +1,7 @@
 import User from '../models/User.js';
 
 /**
- * createUser
- * 
  * Creates a new user in the database.
- * 
- * @param {Object} userData - User data to be created
- * @returns {Promise<Object>} New user object
  */
 export const createUser = async (userData) => {
   const user = new User(userData);
@@ -14,35 +9,35 @@ export const createUser = async (userData) => {
 };
 
 /**
- * findByEmail
- * 
- * Finds a user by email in the database.
- * 
- * @param {string} email - Email to search
- * @returns {Promise<Object|null>} User object or null
+ * Finds a user by email.
  */
 export const findByEmail = async (email) => {
   return await User.findOne({ email });
 };
 
 /**
- * updateFavoriteLabels
- * 
- * Updates a user's favorite labels for a specific category (purpose).
- * 
- * @param {string} email - Email of the user
- * @param {string} purpose - Category (e.g. 'linkedin', 'instagram')
- * @param {string[]} labels - Array of labels to save
- * @returns {Promise<Object|null>} Updated user or null if not found
+ * Updates user's favorite labels for a given purpose.
  */
 export const updateFavoriteLabels = async (email, purpose, labels) => {
   const fieldPath = `favoriteLabels.${purpose}`;
-
   const update = {
-    $set: {
-      [fieldPath]: labels
+    $addToSet: {
+      [fieldPath]: { $each: labels }
     }
   };
 
   return await User.findOneAndUpdate({ email }, update, { new: true });
 };
+
+/**
+ * Retrieves favorite labels for a specific purpose.
+ */
+export const getFavoriteLabelsByPurpose = async (email, purpose) => {
+  const user = await User.findOne({ email });
+  if (!user) return null;
+
+  const labels = user.favoriteLabels?.[purpose];
+  return labels?.length ? labels : null;
+};
+
+

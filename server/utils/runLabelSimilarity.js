@@ -3,13 +3,12 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-// הפיכת ES Module לנתיב קובץ תקני
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export const runLabelSimilarity = (inputData) => {
   return new Promise((resolve, reject) => {
-    const scriptPath = path.join(__dirname, '../rag/label_similarity.py'); // ✅ זה הנתיב הנכון
+    const scriptPath = path.join(__dirname, '../rag/label_similarity.py'); 
 
     const py = spawn('python', [scriptPath]);
     let output = '';
@@ -21,7 +20,7 @@ export const runLabelSimilarity = (inputData) => {
 
     py.stderr.on('data', (data) => {
       error += data.toString();
-      console.error('🐍 Python stderr:', data.toString()); // ✅ חשוב מאוד
+      console.error('🐍 Python stderr:', data.toString()); 
 
     });
 

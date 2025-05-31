@@ -50,7 +50,6 @@ const ResultsDisplay = () => {
       console.log('🧠 Positive labels from liked photos (raw):', likedLabels);
       console.log('🔗 All liked labels (deduplicated):', uniqueLabels);
 
-      // ⬇️ שליחת הלייבלים לשרת
       if (user?.email && purpose && uniqueLabels.length > 0) {
         fetch(`${API_BASE_URL}/api/favorite-labels`, {
           method: 'POST',

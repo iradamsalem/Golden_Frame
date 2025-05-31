@@ -11,7 +11,6 @@ export const calculateSharpness = async (buffer) => {
 
     const n = data.length;
 
-    // חישוב חדות (סטיית תקן של הפרשים בין פיקסלים סמוכים)
     let sumSqDiff = 0;
     for (let i = 0; i < n - 1; i++) {
       const diff = data[i] - data[i + 1];
@@ -19,7 +18,6 @@ export const calculateSharpness = async (buffer) => {
     }
     const sharpness = Math.sqrt(sumSqDiff / (n - 1));
 
-    // חישוב שונות כללית של ערכי הפיקסלים (variance)
     let sum = 0;
     let sumSq = 0;
     for (let i = 0; i < n; i++) {
