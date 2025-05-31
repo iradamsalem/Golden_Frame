@@ -1,0 +1,27 @@
+{
+    "instagram": [
+      "selfie", "colorful", "vibrant", "aesthetic", "trendy", "lifestyle",
+      "fashion", "influencer", "travel", "food", "creative", "candid", "portrait"
+    ],
+    "facebook": [
+      "friends", "group", "family", "event", "casual", "social",
+      "celebration", "party", "memory", "outdoor", "gathering", "pet"
+    ],
+    "twitter": [
+      "profile", "headshot", "minimal", "logo", "opinion", "news",
+      "meme", "text", "simple", "selfie"
+    ],
+    "linkedin": [
+      "professional", "business attire", "suit", "formal", "portrait",
+      "headshot", "confident", "office", "clean background", "resume"
+    ],
+    "dating": [
+      "smile", "selfie", "candid", "pet", "travel", "hobby", "outdoor",
+      "fun", "group (not primary)", "friendly", "natural"
+    ],
+    "resume": [
+      "headshot", "professional", "formal", "neutral background", "confident",
+      "business attire", "clear", "sharp", "portrait"
+    ]
+  }
+  

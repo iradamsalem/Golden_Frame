@@ -14,7 +14,7 @@ const Toaster = ({ visible, message, type = "default" }) => {
 const styles = StyleSheet.create({
   toast: {
     position: 'absolute',
-    bottom: 40,
+    bottom: 100,
     left: 20,
     right: 20,
     backgroundColor: '#333',

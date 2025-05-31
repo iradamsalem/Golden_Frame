@@ -1,5 +1,11 @@
 import { savePurpose } from '../services/purpose.service.js';
 
+/**
+ * receivePurpose Controller
+ * 
+ * Receives a purpose from the client and saves it to the database.
+ */ 
+
 export async function receivePurpose(req, res) {
   const { purpose } = req.body;
 

@@ -2,6 +2,12 @@ import express from 'express';
 import { uploadPhotos, getSelectedImage } from '../controllers/photosController.js';
 import multer from 'multer';
 
+/**
+ * photosRoutes
+ * 
+ * Defines the routes for photo upload and retrieval.
+ */
+
 const router = express.Router();
 
 const storage = multer.memoryStorage();
