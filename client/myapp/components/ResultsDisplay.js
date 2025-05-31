@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { API_BASE_URL } from '../config';
+import { UserContext } from '../contexts/UserContext';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SWIPE_THRESHOLD = 0.25 * SCREEN_WIDTH;
@@ -19,6 +21,7 @@ const ResultsDisplay = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { photos = [], purpose } = route.params || {};
+  const { user } = useContext(UserContext);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const currentIndexRef = useRef(0);
@@ -46,6 +49,26 @@ const ResultsDisplay = () => {
       const uniqueLabels = [...new Set(likedLabels)];
       console.log('🧠 Positive labels from liked photos (raw):', likedLabels);
       console.log('🔗 All liked labels (deduplicated):', uniqueLabels);
+
+      // ⬇️ שליחת הלייבלים לשרת
+      if (user?.email && purpose && uniqueLabels.length > 0) {
+        fetch(`${API_BASE_URL}/api/favorite-labels`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: user.email,
+            purpose,
+            labels: uniqueLabels,
+          }),
+        })
+          .then(res => res.json())
+          .then(data => {
+            console.log('✅ Labels saved:', data);
+          })
+          .catch(err => {
+            console.error('❌ Error saving favorite labels:', err);
+          });
+      }
     }
   }, [showEndScreen]);
 
@@ -61,7 +84,7 @@ const ResultsDisplay = () => {
     const liked = direction === 'right';
     const indexNow = currentIndexRef.current;
 
-    setHideCard(true); // ⛔️ הסתרה מיידית
+    setHideCard(true);
 
     Animated.timing(position, {
       toValue: {
@@ -84,7 +107,7 @@ const ResultsDisplay = () => {
       } else {
         currentIndexRef.current = nextIndex;
         setCurrentIndex(nextIndex);
-        setTimeout(() => setHideCard(false), 10); // ✅ הצגת הקלף הבא
+        setTimeout(() => setHideCard(false), 10);
       }
     });
   };
@@ -209,154 +232,30 @@ const ResultsDisplay = () => {
   );
 };
 
-
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: '#0a0a23',
-    flex: 1,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: 'gold',
-    paddingTop: 40,
-    textAlign: 'center',
-  },
-  swiperContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  cardContainer: {
-    width: '100%',
-    height: 400,
-    backgroundColor: '#1a1a2e',
-    borderRadius: 10,
-    padding: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  rankBadge: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    backgroundColor: 'gold',
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1,
-  },
-  rankText: {
-    color: '#1a1a2e',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  image: {
-    width: '100%',
-    height: 300,
-    borderRadius: 10,
-  },
-  scoreContainer: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    padding: 8,
-    borderRadius: 5,
-  },
-  scoreText: {
-    color: 'gold',
-    fontWeight: 'bold',
-  },
-  swipeHint: {
-    color: 'gold',
-    fontSize: 14,
-    textAlign: 'center',
-    marginTop: 10,
-  },
-  overlayLabelContainer: {
-    position: 'absolute',
-    top: 40,
-    left: 20,
-    right: 20,
-    zIndex: 2,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-  },
-  overlayLabel: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    padding: 10,
-    borderRadius: 10,
-  },
-  likeLabel: {
-    color: 'green',
-    backgroundColor: 'rgba(0,255,0,0.2)',
-  },
-  nopeLabel: {
-    color: 'red',
-    backgroundColor: 'rgba(255,0,0,0.2)',
-  },
-  feedbackWrapper: {
-    marginTop: 20,
-    gap: 12,
-  },
-  card: {
-    backgroundColor: '#2b2b3c',
-    padding: 16,
-    borderRadius: 10,
-  },
-  cardTitle: {
-    fontSize: 18,
-    color: 'gold',
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  cardText: {
-    color: '#ddd',
-    fontSize: 14,
-  },
-  buttonContainer: {
-    alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 20,
-    height: 50,
-    paddingBottom: 100,
-  },
-  button: {
-    backgroundColor: 'gold',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 50,
-    minWidth: 250,
-  },
-  buttonText: {
-    color: '#1a1a2e',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  endScreen: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 30,
-    backgroundColor: '#0a0a23',
-  },
-  endText: {
-    fontSize: 24,
-    color: 'gold',
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
+  container: { padding: 20, backgroundColor: '#0a0a23', flex: 1 },
+  title: { fontSize: 28, fontWeight: 'bold', marginBottom: 20, color: 'gold', paddingTop: 40, textAlign: 'center' },
+  swiperContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  cardContainer: { width: '100%', height: 400, backgroundColor: '#1a1a2e', borderRadius: 10, padding: 8, justifyContent: 'center', alignItems: 'center' },
+  rankBadge: { position: 'absolute', top: 10, left: 10, backgroundColor: 'gold', width: 30, height: 30, borderRadius: 15, justifyContent: 'center', alignItems: 'center', zIndex: 1 },
+  rankText: { color: '#1a1a2e', fontWeight: 'bold', fontSize: 16 },
+  image: { width: '100%', height: 300, borderRadius: 10 },
+  scoreContainer: { position: 'absolute', top: 10, right: 10, backgroundColor: 'rgba(0, 0, 0, 0.7)', padding: 8, borderRadius: 5 },
+  scoreText: { color: 'gold', fontWeight: 'bold' },
+  swipeHint: { color: 'gold', fontSize: 14, textAlign: 'center', marginTop: 10 },
+  overlayLabelContainer: { position: 'absolute', top: 40, left: 20, right: 20, zIndex: 2, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20 },
+  overlayLabel: { fontSize: 32, fontWeight: 'bold', padding: 10, borderRadius: 10 },
+  likeLabel: { color: 'green', backgroundColor: 'rgba(0,255,0,0.2)' },
+  nopeLabel: { color: 'red', backgroundColor: 'rgba(255,0,0,0.2)' },
+  feedbackWrapper: { marginTop: 20, gap: 12 },
+  card: { backgroundColor: '#2b2b3c', padding: 16, borderRadius: 10 },
+  cardTitle: { fontSize: 18, color: 'gold', fontWeight: '600', marginBottom: 8 },
+  cardText: { color: '#ddd', fontSize: 14 },
+  buttonContainer: { alignItems: 'center', marginTop: 20, marginBottom: 20, height: 50, paddingBottom: 100 },
+  button: { backgroundColor: 'gold', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 25, justifyContent: 'center', alignItems: 'center', height: 50, minWidth: 250 },
+  buttonText: { color: '#1a1a2e', fontWeight: 'bold', fontSize: 16 },
+  endScreen: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 30, backgroundColor: '#0a0a23' },
+  endText: { fontSize: 24, color: 'gold', fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
 });
 
 export default ResultsDisplay;

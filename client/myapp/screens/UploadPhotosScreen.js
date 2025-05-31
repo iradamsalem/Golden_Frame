@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   View,
   Text,
@@ -12,50 +12,43 @@ import { Card, CardHeader, CardContent } from '../components/ui/card';
 import PhotoUploader from '../components/PhotoUploader';
 import { useNavigation } from '@react-navigation/native';
 import { API_BASE_URL } from '../config';
+import { UserContext } from '../contexts/UserContext';
+import Avatar from '../components/ui/avatar';
 
-// Calculate screen dimensions and image sizes
-const screenWidth = Dimensions.get('window').width; // Get the screen width
-const maxCardWidth = 400; // Maximum width for the card
-const imageSpacing = 10; // Spacing between images
-const actualCardWidth = Math.min(screenWidth, maxCardWidth); // Use the smaller value between screen width and maxCardWidth
-const imageSize = (actualCardWidth - imageSpacing * 3) / 2; // Calculate the size of each image
+const screenWidth = Dimensions.get('window').width;
+const maxCardWidth = 400;
+const imageSpacing = 10;
+const actualCardWidth = Math.min(screenWidth, maxCardWidth);
+const imageSize = (actualCardWidth - imageSpacing * 3) / 2;
 
-/**
- * UploadPhotosScreen Component
- * This component allows users to upload photos, view them, and navigate to the PurposeSelector screen.
- */
 const UploadPhotosScreen = () => {
-  const [selectedPhotos, setSelectedPhotos] = useState([]); // State to store uploaded photos
-  const [errorMessage, setErrorMessage] = useState(''); // State to store error messages
-  const navigation = useNavigation(); // Hook to navigate between screens
+  const [selectedPhotos, setSelectedPhotos] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigation = useNavigation();
+  const { user, logout } = useContext(UserContext);
 
-  /**
-   * handlePhotosUploaded Function
-   * Updates the state with the uploaded photos and clears any error messages.
-   *
-   * @param {Array} photos - Array of uploaded photo URIs.
-   */
   const handlePhotosUploaded = (photos) => {
     setSelectedPhotos(photos);
     setErrorMessage('');
   };
 
-  /**
-   * handleNavigateToPurposeSelector Function
-   * Navigates to the PurposeSelector screen if at least one photo is uploaded.
-   * Displays an error message if no photos are uploaded.
-   */
+  const handleLogout = async () => {
+    await logout();
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
+  };
+
   const handleNavigateToPurposeSelector = async () => {
     if (selectedPhotos.length === 0) {
       setErrorMessage('Please upload at least one photo before selecting a purpose.');
       return;
     }
-  
-    setErrorMessage('');  // Clear any previous error messages
-      //  Navigate to PurposeSelector screen with uploaded photos
-      navigation.navigate('PurposeSelector', { photos: selectedPhotos });
-  
-    // Prepare form data for uploading photos
+
+    setErrorMessage('');
+    navigation.navigate('PurposeSelector', { photos: selectedPhotos });
+
     const formData = new FormData();
     selectedPhotos.forEach((photo, index) => {
       formData.append('photos', {
@@ -64,88 +57,84 @@ const UploadPhotosScreen = () => {
         type: 'image/jpeg',
       });
     });
-  
-    
-  let attempt = 0;
-  const maxAttempts = 2;
 
-  while (attempt < maxAttempts) {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/photos`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        body: formData,
-      });
+    let attempt = 0;
+    const maxAttempts = 2;
 
-      if (!response.ok) {
-        throw new Error('Failed to upload photos');
-      }
+    while (attempt < maxAttempts) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/photos`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          body: formData,
+        });
 
-      const data = await response.json();
-      console.log('Photos uploaded successfully:', data);
-      return true; // success
-
-    } catch (error) {
-      attempt++;
-
-      const isNetworkError = error.message.includes('Network request failed');
-
-      if (isNetworkError && attempt < maxAttempts) {
-        // Network error – try again without logging
-        continue;
-      } else {
-        //network error
-        if (!isNetworkError) {
-          console.error('Error uploading photos:', error);
+        if (!response.ok) {
+          throw new Error('Failed to upload photos');
         }
-        setErrorMessage('Failed to upload photos. Please try again.');
-        return false;
+
+        const data = await response.json();
+        console.log('Photos uploaded successfully:', data);
+        return true;
+      } catch (error) {
+        attempt++;
+        const isNetworkError = error.message.includes('Network request failed');
+        if (isNetworkError && attempt < maxAttempts) {
+          continue;
+        } else {
+          console.error('Error uploading photos:', error);
+          setErrorMessage('Failed to upload photos. Please try again.');
+          return false;
+        }
       }
     }
-  }
-};
+  };
 
+  const firstLetter = user?.name?.charAt(0).toUpperCase() || '?';
 
   return (
     <View style={styles.container}>
-      {/* Screen Title */}
+      {/* Header מותאם אישית בתוך המסך */}
+      <View style={styles.header}>
+        <Avatar fallbackText={firstLetter} size={40} />
+        <View style={styles.userInfo}>
+          <Text style={styles.userName}>{user?.name || 'Guest'}</Text>
+          <Text style={styles.userEmail}>{user?.email || 'No email'}</Text>
+        </View>
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
+
       <Text style={styles.title}>Upload Your Photos</Text>
 
-      {/* Centered Card for Photo Upload and Navigation */}
       <View style={styles.centeredCard}>
         <Card style={styles.card}>
           <CardHeader>
-            {/* Button to Navigate to PurposeSelector */}
             <TouchableOpacity
               style={styles.purposeButton}
               onPress={handleNavigateToPurposeSelector}
             >
               <Text style={styles.purposeButtonText}>Select Purpose</Text>
             </TouchableOpacity>
-            {/* Display Error Message if No Photos are Uploaded */}
             {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
           </CardHeader>
 
           <CardContent style={styles.cardContent}>
-            {/* PhotoUploader Component */}
             <PhotoUploader onPhotosUploaded={handlePhotosUploaded} />
-
-            {/* Scrollable List of Uploaded Photos */}
             <ScrollView
               contentContainerStyle={styles.scrollContainer}
               showsVerticalScrollIndicator={false}
             >
               {selectedPhotos.map((item, index) => (
                 <View key={index} style={styles.imageWrapper}>
-                  {/* Display Uploaded Photo */}
                   <Image source={{ uri: item.uri || item }} style={styles.image} />
-                  {/* Button to Remove Photo */}
                   <TouchableOpacity
                     style={styles.removeButton}
                     onPress={() => {
-                      const newPhotos = selectedPhotos.filter((_, i) => i !== index); // Remove the selected photo
+                      const newPhotos = selectedPhotos.filter((_, i) => i !== index);
                       setSelectedPhotos(newPhotos);
                     }}
                   >
@@ -161,87 +150,118 @@ const UploadPhotosScreen = () => {
   );
 };
 
-// Styles for the UploadPhotosScreen component
 const styles = StyleSheet.create({
   container: {
-    padding: 20, // Padding around the screen
-    paddingTop: 50, // Extra padding at the top
-    backgroundColor: '#1a1a2e', // Dark background color
-    flex: 1, // Allow the container to grow and fill available space
+    padding: 20,
+    paddingTop: 50,
+    backgroundColor: '#1a1a2e',
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+    backgroundColor: '#14213d',
+    padding: 10,
+    borderRadius: 8,
+  },
+  userInfo: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  userName: {
+    color: 'gold',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  userEmail: {
+    color: '#ccc',
+    fontSize: 13,
+  },
+  logoutButton: {
+    backgroundColor: 'gold',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 5,
+  },
+  logoutText: {
+    color: '#1a1a2e',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
   title: {
-    fontSize: 26, // Font size for the title
-    fontWeight: 'bold', // Bold font weight
-    color: '#FFD700', // Gold text color
-    textAlign: 'center', // Center the title text
-    marginBottom: 20, // Space below the title
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#FFD700',
+    textAlign: 'center',
+    marginBottom: 20,
   },
   centeredCard: {
-    alignItems: 'center', // Center the card horizontally
-    justifyContent: 'center', // Center the card vertically
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   card: {
-    backgroundColor: '#16213E', // Dark blue background color
-    borderRadius: 16, // Rounded corners
-    padding: 12, // Padding inside the card
-    marginBottom: 20, // Space below the card
-    width: '100%', // Full width of the container
-    maxWidth: maxCardWidth, // Maximum width for the card
-    flexGrow: 1, // Allow the card to grow
+    backgroundColor: '#16213E',
+    borderRadius: 16,
+    padding: 12,
+    marginBottom: 20,
+    width: '100%',
+    maxWidth: maxCardWidth,
+    flexGrow: 1,
   },
   purposeButton: {
-    backgroundColor: '#FFD700', // Gold background color
-    paddingVertical: 10, // Vertical padding inside the button
-    paddingHorizontal: 20, // Horizontal padding inside the button
-    borderRadius: 8, // Rounded corners
-    alignItems: 'center', // Center the button text horizontally
-    alignSelf: 'center', // Center the button within its container
-    marginBottom: 5, // Space below the button
+    backgroundColor: '#FFD700',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginBottom: 5,
   },
   purposeButtonText: {
-    color: '#1a1a2e', // Dark text color for contrast
-    fontSize: 16, // Font size for the button text
-    fontWeight: 'bold', // Bold font weight
+    color: '#1a1a2e',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   errorText: {
-    color: '#FF6B6B', // Red text color for error messages
-    textAlign: 'center', // Center the error text
-    marginTop: 5, // Space above the error text
-    fontSize: 14, // Font size for the error text
+    color: '#FF6B6B',
+    textAlign: 'center',
+    marginTop: 5,
+    fontSize: 14,
   },
   cardContent: {
-    paddingHorizontal: imageSpacing, // Horizontal padding inside the card content
-    maxHeight: 500, // Maximum height for the card content
+    paddingHorizontal: imageSpacing,
+    maxHeight: 500,
   },
   scrollContainer: {
-    flexDirection: 'row', // Arrange items in a row
-    flexWrap: 'wrap', // Allow items to wrap to the next row
-    justifyContent: 'space-between', // Space items evenly
-    paddingBottom: 20, // Space below the scroll container
-    marginTop: 10, // Space above the scroll container
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingBottom: 20,
+    marginTop: 10,
   },
   imageWrapper: {
-    width: '48%', // Width of each image wrapper
-    marginBottom: 12, // Space below each image
-    alignItems: 'center', // Center the image horizontally
+    width: '48%',
+    marginBottom: 12,
+    alignItems: 'center',
   },
   image: {
-    width: '100%', // Full width of the image wrapper
-    height: imageSize * 0.8, // Height of the image
-    borderRadius: 10, // Rounded corners for the image
-    resizeMode: 'cover', // Cover the entire image area
+    width: '100%',
+    height: imageSize * 0.8,
+    borderRadius: 10,
+    resizeMode: 'cover',
   },
   removeButton: {
-    marginTop: 6, // Space above the remove button
-    backgroundColor: '#007BFF', // Blue background color for the button
-    paddingVertical: 5, // Vertical padding inside the button
-    paddingHorizontal: 10, // Horizontal padding inside the button
-    borderRadius: 5, // Rounded corners for the button
-    alignSelf: 'center', // Center the button within its container
+    marginTop: 6,
+    backgroundColor: '#007BFF',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    alignSelf: 'center',
   },
   removeButtonText: {
-    color: 'white', // White text color
-    fontWeight: 'bold', // Bold font weight
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 
