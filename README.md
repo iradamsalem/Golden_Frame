@@ -1,185 +1,79 @@
-# Golden Frame
+# 🖼️ Golden Frame
 
-**Golden Frame** is a collaborative mobile app built with React Native (Expo) that allows users to upload images, select a processing purpose, and receive a personalized result.  
-It is designed for creative and interactive photo handling — ideal for applications like design feedback, virtual try-ons, or artistic framing.
-
-## Features
-- 📤 Upload photos from device
-- 🎯 Select a processing "purpose" or context
-- 🧠 Get dynamic results based on user input
-- 🧩 Modular UI with reusable components
-- ☁️ Server integration for backend processing
-
-## Tech Stack
-- **Frontend:** React Native (Expo)
-- **Backend:** Node.js (server folder)
-- **State Management:** TBD (based on implementation)
-
-
-## 📁 Categories & Scoring Logic
-
-### 📸 Instagram
-**Goal:**  
-Highlight visually engaging, colorful, expressive, and well-styled photos that thrive in Instagram’s aesthetic ecosystem.
-
-| Feature         | Weight | Notes |
-|------------------|--------|-------|
-| Brightness       | 0.15   | Bright photos are eye-catching in feed scrolling. |
-| Sharpness        | 0.10   | Clear details reflect quality and retain attention. |
-| Face             | 0.20   | Faces foster emotional engagement. |
-| Expression       | 0.10   | Smiles and expressive looks perform better. |
-| Alignment        | 0.05   | Good framing adds to visual balance. |
-| Filters          | 0.05   | Stylish filters enhance visual storytelling. |
-| Resolution       | 0.10   | High-res = high quality perception. |
-| Labels           | 0.20   | Tags like `smile`, `fashion`, or `selfie` matter. |
-| Colors (Blue)    | 0.05   | Blue tones correlate with more likes. |
-
-**Positive Labels:**  
-`smile`, `person`, `selfie`, `fashion`, `colorful`, `happiness`, `scenery`
-
-**Negative Labels:**  
-`crowd`, `dark`, `blur`
-
-**Smart Label Inference:**  
-Using `inferLabels`, we infer high-level labels like `person` from partial data like `smile`, `beard`, or `t-shirt`.
+**Golden Frame** is a collaborative mobile app built with React Native (Expo) that allows users to upload images, select a processing **purpose**, and receive a smart, personalized score based on visual and semantic factors.  
+Ideal for creative photo feedback, profile optimization, and content enhancement.
 
 ---
 
-### 👔 LinkedIn
-**Goal:**  
-Professional, approachable, well-lit portraits suitable for business networking.
+## ✨ Features
 
-| Feature         | Weight | Notes |
-|------------------|--------|-------|
-| Face             | 0.25   | Essential for identification and trust. |
-| Resolution       | 0.20   | Reflects quality and professionalism. |
-| Brightness       | 0.15   | Proper lighting projects clarity. |
-| Sharpness        | 0.15   | Clean edges improve perception. |
-| Alignment        | 0.10   | Balanced framing = visual professionalism. |
-| Expression       | 0.10   | Warm, neutral smile preferred. |
-| Labels           | 0.05   | Tags like `suit`, `professional`, `shirt`.
-
-**Positive Labels:**  
-`suit`, `shirt`, `professional`, `smile`, `tie`
-
-**Negative Labels:**  
-`selfie`, `crowd`, `dark`, `blur`
+- 📤 Upload photos directly from the device
+- 🎯 Choose the **intended use** (e.g., Instagram, LinkedIn)
+- 🧠 Receive **smart scores** based on deep visual and semantic analysis
+- 🔍 Uses **Google Vision** + RAG (retrieval-augmented label matching)
+- 💡 Modular & extensible architecture for new categories
+- ☁️ Node.js backend with Python-based semantic scoring
 
 ---
 
-### ❤️ Dating Apps
-**Goal:**  
-Show personality, authenticity, friendliness, and emotional accessibility.
+## ⚙️ Tech Stack
 
-| Feature         | Weight |
-|------------------|--------|
-| Expression       | 0.20 |
-| Face             | 0.20 |
-| Brightness       | 0.15 |
-| Labels           | 0.15 |
-| Sharpness        | 0.10 |
-| Resolution       | 0.10 |
-| Alignment        | 0.05 |
-| Filters          | 0.05 |
-
-**Positive Labels:**  
-`smile`, `selfie`, `person`, `fun`, `flattering`, `colorful`
-
-**Negative Labels:**  
-`dark`, `blur`, `angry`, `crowd`
+| Layer     | Tech                                  |
+|-----------|---------------------------------------|
+| Frontend  | React Native (Expo)                   |
+| Backend   | Node.js + Express                     |
+| Vision AI | Google Cloud Vision API               |
+| NLP / RAG | Python + HuggingFace + LangChain      |
+| Embeddings| all-MiniLM-L6-v2 + cosine similarity  |
 
 ---
 
-### 📄 Resume
-**Goal:**  
-Formal, neutral, clear headshots that reflect professionalism.
+## 🧠 Smart Scoring System
 
-| Feature         | Weight |
-|------------------|--------|
-| Face             | 0.30 |
-| Resolution       | 0.25 |
-| Brightness       | 0.15 |
-| Sharpness        | 0.15 |
-| Alignment        | 0.10 |
-| Expression       | 0.05 |
+Each image is analyzed across multiple dimensions:
 
-**Positive Labels:**  
-`suit`, `professional`, `shirt`, `person`, `portrait`
+### 1. Visual Processing (Node.js)
+- Resolution, brightness, sharpness
+- Face detection, expression, filters
+- Label annotations from Google Vision API
 
-**Negative Labels:**  
-`selfie`, `smile` (excessive), `fashion`, `blur`, `colorful`
+### 2. Label Enrichment
+- `inferLabels()` enhances partial labels into richer, inferred concepts (e.g., `smile` → `person`)
 
----
+### 3. RAG-Based Label Matching (Python)
+- Each category (Instagram, LinkedIn, etc.) has a predefined **semantic vector**
+- For each image:
+  - Image labels are embedded into vectors
+  - Average label vector is computed
+  - Cosine similarity with category vector yields a semantic score (1–100)
 
-### 👥 Facebook
-**Goal:**  
-Casual, friendly, social photos that reflect personality and real-life moments.
-
-| Feature         | Weight |
-|------------------|--------|
-| Face             | 0.20 |
-| Expression       | 0.20 |
-| Labels           | 0.20 |
-| Brightness       | 0.15 |
-| Sharpness        | 0.10 |
-| Resolution       | 0.10 |
-| Filters          | 0.05 |
-
-**Positive Labels:**  
-`friends`, `smile`, `group`, `outdoor`, `casual`
+### 4. Final Score Composition
+- **60%** → Visual feature score (based on weighted factors like sharpness, brightness, etc.)
+- **40%** → Semantic similarity from RAG
+- Bonus: extra points for specific patterns (e.g., only one face in the photo)
 
 ---
 
-### 🐦 Twitter / X
-**Goal:**  
-Expressive, sharp, profile-focused images with unique personality or edge.
+## 🧪 Example Flow
 
-| Feature         | Weight |
-|------------------|--------|
-| Expression       | 0.25 |
-| Face             | 0.20 |
-| Sharpness        | 0.15 |
-| Resolution       | 0.15 |
-| Labels           | 0.15 |
-| Filters          | 0.10 |
-
-**Positive Labels:**  
-`face`, `smile`, `fun`, `bold`, `colorful`, `personality`
+1. User uploads photos
+2. Selects category/purpose (e.g., "LinkedIn")
+3. Server enriches photo metadata (vision + local processing)
+4. Python script compares labels to semantic vector of that category
+5. Scores returned and sorted
 
 ---
 
-### 🏢 Professional (General)
-**Goal:**  
-Neutral, high-quality portraits suitable for any business, press, or corporate need.
+## 🚧 Limitations & Future Improvements
 
-| Feature         | Weight |
-|------------------|--------|
-| Face             | 0.25 |
-| Resolution       | 0.20 |
-| Sharpness        | 0.15 |
-| Brightness       | 0.15 |
-| Alignment        | 0.10 |
-| Expression       | 0.10 |
-| Labels           | 0.05 |
+> ⚠️ This is a **first iteration** focused on proof-of-concept and basic feature parity.
 
-**Positive Labels:**  
-`person`, `professional`, `clean`, `suit`, `neutral`
-
----
-
-## 🧠 Label Inference System
-
-The analyzer uses a smart `inferLabels()` method to add missing labels when the system detects partial information (e.g., `beard`, `smile`, `eyebrow`) but doesn't explicitly tag the image with `person`.
-
-This helps maintain accurate, fair scoring across all categories — even when Google Vision misses key context.
-
----
-
-## 🧪 How It Works
-
-- Each photo is passed through Google Vision and other processors.
-- Data is enriched with resolution, brightness, sharpness, and label inference.
-- A weighted scoring algorithm per category evaluates and ranks the photos.
-- Output: Ranked photo list per target category.
+### Planned Enhancements:
+- 🧠 **Neural Network-Based Scoring**  
+  Replace or complement the rule-based system with a trainable model (MLP or CNN) that learns feature importance.
+- 🗂️ **Training Dataset**  
+  Collect user interactions or use labeled public datasets for supervised fine-tuning.
+- 🎨 **UX Optimizations**  
+  More granular category customization & feedback UI in mobile app.
 
 ---

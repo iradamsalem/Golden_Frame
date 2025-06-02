@@ -3,11 +3,11 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
-import purposeRoutes from './routes/purpose.routes.js';
 import photosRoutes from './routes/photos.routes.js'; 
 import userRoutes from './routes/userRoutes.js';
+import favoriteLabelRoutes from './routes/favoriteLabelRoutes.js'; 
 
-dotenv.config(); // טוען משתנים מהקובץ .env
+dotenv.config();
 
 const app = express();
 const PORT = 3001;
@@ -17,19 +17,17 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api/purpose', purposeRoutes);
-app.use('/api/photos', photosRoutes); 
+app.use('/api/photos', photosRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/favorite-labels', favoriteLabelRoutes); 
 
-// Connect to MongoDB Atlas
+// DB connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
 .then(() => {
   console.log('✅ Connected to MongoDB Atlas');
-
-  // Start the server only after DB connection succeeds
   app.listen(PORT, () => {
     console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
   });

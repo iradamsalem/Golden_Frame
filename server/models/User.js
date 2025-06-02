@@ -27,8 +27,18 @@ const userSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  favoriteLabels: {
+    linkedin:     { type: [String], default: [] },
+    instagram:    { type: [String], default: [] },
+    facebook:     { type: [String], default: [] },
+    twitter:      { type: [String], default: [] },
+    resume:       { type: [String], default: [] },
+    professional: { type: [String], default: [] },
+    datingApps:   { type: [String], default: [] }
   }
 });
+
 
 const User = mongoose.model('User', userSchema);
 export default User;
