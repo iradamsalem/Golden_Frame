@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: 'gold',
+    color: '#fff',
     marginBottom: 40,
     textAlign: 'center',
   },
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   purposeText: {
-    color: 'gold',
+    color: '#4a90e2',
     fontSize: 18,
     fontWeight: '600',
     marginTop: 10,
