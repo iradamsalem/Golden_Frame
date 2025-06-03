@@ -123,9 +123,23 @@ const PurposeSelector = () => {
     fetch(`${API_BASE_URL}/api/photos`, {
       method: 'POST',
       body: formData,
-    }).catch((error) => {
-      console.error('❌ Upload failed (non-blocking):', error);
-    });
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return fetch(`${API_BASE_URL}/api/photos`, {
+            method: 'POST',
+            body: formData,
+          });
+        }
+      })
+      .catch((error) => {
+        fetch(`${API_BASE_URL}/api/photos`, {
+          method: 'POST',
+          body: formData,
+        }).catch((retryError) => {
+          console.error('❌ Upload failed after retry:', retryError);
+        });
+      });
   };
 
   const renderItem = ({ item }) => {
