@@ -1,4 +1,4 @@
-const LOCAL_IP = 'http://10.0.0.8:3001';
+const LOCAL_IP = 'http://172.20.10.6:3001';
 
 export const API_BASE_URL = LOCAL_IP;
 
