@@ -8,9 +8,9 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  Image
 } from 'react-native';
 
-import AppLogo from '../components/AppLogo';
 import {
   Card,
   CardContent,
@@ -151,7 +151,11 @@ const LoginScreen = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <AppLogo style={styles.logo} />
+      <Image
+        source={require('../assets/GoldenFrameLogo.png')}
+        style={styles.logo}
+        resizeMode="contain"
+      />
       <Text style={styles.title}>Purpose Pics</Text>
       <Text style={styles.subtitle}>Find your perfect photo for any purpose</Text>
 
@@ -263,27 +267,29 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
     alignItems: 'center',
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#2A2B33',
   },
   logo: {
     marginBottom: 20,
+    width: 140,
+    height: 140,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#FFD700',
+    color: '#E2B64D',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
-    color: '#FFD700',
+    color: '#E2B64D',
     marginBottom: 20,
     textAlign: 'center',
   },
   card: {
     width: '100%',
     maxWidth: 400,
-    backgroundColor: '#16213E',
+    backgroundColor: '#23232b',
     borderRadius: 10,
     padding: 10,
   },
@@ -291,12 +297,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#FFD700',
+    color: '#E2B64D',
   },
   cardDescription: {
     textAlign: 'center',
     fontSize: 14,
-    color: '#ccc',
+    color: '#b8b8b8',
   },
   section: {
     marginBottom: 15,
@@ -304,19 +310,19 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     marginBottom: 5,
-    color: '#FFD700',
+    color: '#E2B64D',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#E2B64D',
     borderRadius: 5,
     padding: 10,
     fontSize: 14,
     color: '#fff',
-    backgroundColor: '#0f3460',
+    backgroundColor: '#23232b',
   },
   button: {
-    backgroundColor: '#FFD700',
+    backgroundColor: '#E2B64D',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
@@ -325,13 +331,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#a3a3a3',
   },
   buttonText: {
-    color: '#1a1a2e',
+    color: '#2A2B33',
     fontSize: 16,
   },
   switchText: {
     textAlign: 'center',
     fontSize: 14,
-    color: '#FFD700',
+    color: '#E2B64D',
     marginTop: 10,
   },
 });

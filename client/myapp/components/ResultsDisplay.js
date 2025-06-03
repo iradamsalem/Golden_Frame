@@ -203,7 +203,7 @@ const ResultsDisplay = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Your Photos Ranked</Text>
       <View style={styles.swiperContainer}>{renderPhotoCard()}</View>
-      <Text style={styles.swipeHint}>Swipe right if you like it, left if you don’t</Text>
+      <Text style={styles.swipeHint}>Swipe right if you like it, left if you don't</Text>
 
       <View style={styles.feedbackWrapper}>
         <View style={styles.card}>
@@ -218,7 +218,7 @@ const ResultsDisplay = () => {
         <View style={styles.buttonContainer}>
           {isLoading ? (
             <View style={styles.button}>
-              <ActivityIndicator size="small" color="#1a1a2e" />
+              <ActivityIndicator size="small" color="#fff" />
             </View>
           ) : (
             <TouchableOpacity style={styles.button} onPress={handlePress}>
@@ -232,29 +232,29 @@ const ResultsDisplay = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 20, backgroundColor: '#0a0a23', flex: 1 },
-  title: { fontSize: 28, fontWeight: 'bold', marginBottom: 20, color: 'gold', paddingTop: 40, textAlign: 'center' },
+  container: { padding: 20, backgroundColor: '#1a1a2e', flex: 1 },
+  title: { fontSize: 28, fontWeight: 'bold', marginBottom: 20, color: '#E2B64D', paddingTop: 40, textAlign: 'center' },
   swiperContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  cardContainer: { width: '100%', height: 400, backgroundColor: '#1a1a2e', borderRadius: 10, padding: 8, justifyContent: 'center', alignItems: 'center' },
-  rankBadge: { position: 'absolute', top: 10, left: 10, backgroundColor: 'gold', width: 30, height: 30, borderRadius: 15, justifyContent: 'center', alignItems: 'center', zIndex: 1 },
-  rankText: { color: '#1a1a2e', fontWeight: 'bold', fontSize: 16 },
+  cardContainer: { width: '100%', height: 400, backgroundColor: '#2b2b3c', borderRadius: 10, padding: 8, justifyContent: 'center', alignItems: 'center' },
+  rankBadge: { position: 'absolute', top: 10, left: 10, backgroundColor: '#4a90e2', width: 30, height: 30, borderRadius: 15, justifyContent: 'center', alignItems: 'center', zIndex: 1 },
+  rankText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
   image: { width: '100%', height: 300, borderRadius: 10 },
-  scoreContainer: { position: 'absolute', top: 10, right: 10, backgroundColor: 'rgba(0, 0, 0, 0.7)', padding: 8, borderRadius: 5 },
-  scoreText: { color: 'gold', fontWeight: 'bold' },
-  swipeHint: { color: 'gold', fontSize: 14, textAlign: 'center', marginTop: 10 },
+  scoreContainer: { position: 'absolute', top: 10, right: 10, backgroundColor: 'rgba(43, 43, 60, 0.9)', padding: 8, borderRadius: 5 },
+  scoreText: { color: '#E2B64D', fontWeight: 'bold' },
+  swipeHint: { color: '#E2B64D', fontSize: 14, textAlign: 'center', marginTop: 10 },
   overlayLabelContainer: { position: 'absolute', top: 40, left: 20, right: 20, zIndex: 2, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20 },
   overlayLabel: { fontSize: 32, fontWeight: 'bold', padding: 10, borderRadius: 10 },
-  likeLabel: { color: 'green', backgroundColor: 'rgba(0,255,0,0.2)' },
-  nopeLabel: { color: 'red', backgroundColor: 'rgba(255,0,0,0.2)' },
+  likeLabel: { color: '#4CAF50', backgroundColor: 'rgba(76,175,80,0.2)' },
+  nopeLabel: { color: '#f44336', backgroundColor: 'rgba(244,67,54,0.2)' },
   feedbackWrapper: { marginTop: 20, gap: 12 },
   card: { backgroundColor: '#2b2b3c', padding: 16, borderRadius: 10 },
-  cardTitle: { fontSize: 18, color: 'gold', fontWeight: '600', marginBottom: 8 },
+  cardTitle: { fontSize: 18, color: '#E2B64D', fontWeight: '600', marginBottom: 8 },
   cardText: { color: '#ddd', fontSize: 14 },
   buttonContainer: { alignItems: 'center', marginTop: 20, marginBottom: 20, height: 50, paddingBottom: 100 },
-  button: { backgroundColor: 'gold', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 25, justifyContent: 'center', alignItems: 'center', height: 50, minWidth: 250 },
-  buttonText: { color: '#1a1a2e', fontWeight: 'bold', fontSize: 16 },
-  endScreen: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 30, backgroundColor: '#0a0a23' },
-  endText: { fontSize: 24, color: 'gold', fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
+  button: { backgroundColor: '#4a90e2', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 25, justifyContent: 'center', alignItems: 'center', height: 50, minWidth: 250 },
+  buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+  endScreen: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 30, backgroundColor: '#1a1a2e' },
+  endText: { fontSize: 24, color: '#E2B64D', fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
 });
 
 export default ResultsDisplay;
