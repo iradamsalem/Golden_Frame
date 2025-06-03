@@ -47,7 +47,7 @@ export const updateFavoriteLabelsController = async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields: email, purpose, labels' });
     }
 
-    const normalizedPurpose = normalizePurpose(purpose); // ✅ נרמול
+    const normalizedPurpose = normalizePurpose(purpose); 
 
     const updatedUser = await saveUserFavoriteLabels(email, normalizedPurpose, labels);
 
