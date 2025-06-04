@@ -66,7 +66,7 @@ const LoadingScreen = () => {
       <Text style={styles.title}>Analyzing Your Photos</Text>
       
       <View style={styles.content}>
-        <ActivityIndicator size="large" color="gold" />
+        <ActivityIndicator size="large" color="#E2B64D" />
         <Text style={styles.statusText}>{loadingStatus}</Text>
         <Text style={styles.purposeText}>For: {purpose}</Text>
       </View>
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: 'gold',
+    color: '#E2B64D',
     marginBottom: 40,
     textAlign: 'center',
   },
@@ -101,13 +101,13 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   statusText: {
-    color: '#fff',
+    color: '#E2B64D',
     fontSize: 16,
     textAlign: 'center',
     marginTop: 20,
   },
   purposeText: {
-    color: 'gold',
+    color: '#E2B64D',
     fontSize: 18,
     fontWeight: '600',
     marginTop: 10,

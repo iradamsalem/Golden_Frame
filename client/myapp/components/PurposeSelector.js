@@ -169,6 +169,11 @@ const PurposeSelector = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: '#1a1a2e', flex: 1 }]}>
+      {/* Back button */}      
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <Text style={styles.backButtonText}>Back</Text>
+      </TouchableOpacity>
+
       <Text style={styles.title}>Select a Purpose</Text>
       <FlatList
         data={purposes}
@@ -182,13 +187,26 @@ const PurposeSelector = () => {
 };
 // Style definitions
 const styles = StyleSheet.create({
-  container: { padding: 16 },
+  container: { padding: 16, paddingTop: 60 }, // Add padding to make space for the button
+  backButton: {
+    position: 'absolute',
+    top: 60,
+    left: 10,
+    zIndex: 1,
+    padding: 10,
+    backgroundColor: 'rgba(226, 182, 77, 0.3)', // Semi-transparent gold background
+    borderRadius: 5,
+  },
+  backButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 40,
     color: 'gold',
-    paddingTop: 40,
+    paddingTop: 0, // Adjust padding since container has paddingTop
     textAlign: 'center',
   },
   card: {
