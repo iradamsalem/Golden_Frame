@@ -61,7 +61,6 @@ const UploadPhotosScreen = () => {
         <Avatar fallbackText={firstLetter} size={40} />
         <View style={styles.userInfo}>
           <Text style={styles.userName}>{user?.name || 'Guest'}</Text>
-          <Text style={styles.userEmail}>{user?.email || 'No email'}</Text>
         </View>
         <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
           <Text style={styles.logoutText}>Logout</Text>
@@ -122,6 +121,7 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 50,
    // backgroundColor: '#1a1a2e',
+
     flex: 1,
   },
   header: {
@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 15,
    // backgroundColor: '#14213d',
+
     padding: 10,
     borderRadius: 8,
   },
@@ -141,10 +142,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-  userEmail: {
-    color: '#ccc',
-    fontSize: 13,
-  },
   logoutButton: {
     backgroundColor: '#E2B64D',
     paddingHorizontal: 10,
@@ -152,7 +149,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   logoutText: {
-    color: '#1a1a2e',
+    color: '#2A2B33',
     fontWeight: 'bold',
     fontSize: 14,
   },
@@ -169,6 +166,7 @@ const styles = StyleSheet.create({
   },
   card: {
   //  backgroundColor: '#16213E',
+
     borderRadius: 16,
     padding: 12,
     marginBottom: 20,
@@ -186,12 +184,12 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   purposeButtonText: {
-    color: '#1a1a2e',
+    color: '#2A2B33',
     fontSize: 16,
     fontWeight: 'bold',
   },
   errorText: {
-    color: '#FF6B6B',
+    color: '#ff6b6b',
     textAlign: 'center',
     marginTop: 5,
     fontSize: 14,
@@ -220,14 +218,14 @@ const styles = StyleSheet.create({
   },
   removeButton: {
     marginTop: 6,
-    backgroundColor: '#007BFF',
+    backgroundColor: '#b8c1ec',
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
     alignSelf: 'center',
   },
   removeButtonText: {
-    color: 'white',
+    color: '#232946',
     fontWeight: 'bold',
   },
 });

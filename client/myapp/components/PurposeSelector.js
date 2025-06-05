@@ -172,6 +172,7 @@ const PurposeSelector = () => {
      <ImageBackground
           source={require('../assets/texture-bg.png')}
           style={styles.background}>
+
       <Text style={styles.title}>Select a Purpose</Text>
       <FlatList
         data={purposes}
@@ -190,6 +191,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
+
   },
   title: {
     fontSize: 28,
@@ -197,6 +199,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     color: '#E2B64D',
     paddingTop: 40,
+
     textAlign: 'center',
   },
   card: {

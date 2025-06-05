@@ -213,7 +213,7 @@ const ResultsDisplay = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Your Photos Ranked</Text>
       <View style={styles.swiperContainer}>{renderPhotoCard()}</View>
-      <Text style={styles.swipeHint}>Swipe right if you like it, left if you don’t</Text>
+      <Text style={styles.swipeHint}>Swipe right if you like it, left if you don't</Text>
 
       <View style={styles.feedbackWrapper}>
         <View style={styles.card}>
@@ -228,7 +228,7 @@ const ResultsDisplay = () => {
         <View style={styles.buttonContainer}>
           {isLoading ? (
             <View style={styles.button}>
-              <ActivityIndicator size="small" color="#1a1a2e" />
+              <ActivityIndicator size="small" color="#fff" />
             </View>
           ) : (
             <TouchableOpacity style={styles.button} onPress={handlePress}>
@@ -259,10 +259,11 @@ const styles = StyleSheet.create({
   scoreContainer: { position: 'absolute', top: 10, right: 10, backgroundColor: 'rgba(0, 0, 0, 0.7)', padding: 8, borderRadius: 5 },
   scoreText: { color: '#E2B64D', fontWeight: 'bold' },
   swipeHint: { color: '#ccc', fontSize: 14, textAlign: 'center', marginTop: 10 },
+
   overlayLabelContainer: { position: 'absolute', top: 40, left: 20, right: 20, zIndex: 2, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20 },
   overlayLabel: { fontSize: 32, fontWeight: 'bold', padding: 10, borderRadius: 10 },
-  likeLabel: { color: 'green', backgroundColor: 'rgba(0,255,0,0.2)' },
-  nopeLabel: { color: 'red', backgroundColor: 'rgba(255,0,0,0.2)' },
+  likeLabel: { color: '#4CAF50', backgroundColor: 'rgba(76,175,80,0.2)' },
+  nopeLabel: { color: '#f44336', backgroundColor: 'rgba(244,67,54,0.2)' },
   feedbackWrapper: { marginTop: 20, gap: 12 },
   card: { 
    // backgroundColor: '#2b2b3c',
@@ -275,6 +276,7 @@ const styles = StyleSheet.create({
   endScreen: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 30,
    // backgroundColor: '#0a0a23' 
     },
+
   endText: { fontSize: 24, color: '#E2B64D', fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
 });
 

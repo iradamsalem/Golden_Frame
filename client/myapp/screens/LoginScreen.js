@@ -14,10 +14,10 @@ import {
   ScrollView,
   ActivityIndicator,
   ImageBackground,
+
   Image
 } from 'react-native';
 
-import AppLogo from '../components/AppLogo';
 import {
   Card,
   CardContent,
@@ -315,6 +315,7 @@ scrollContainer: {
     flex: 1,
     width: '100%',
     height: '100%',
+
   },
  overlay: {
   flexGrow: 1,
@@ -361,6 +362,7 @@ logo: {
     marginBottom: 20,
     textAlign: 'center',
   },
+
   cardTitle: {
     textAlign: 'center',
     fontSize: 18,
@@ -370,7 +372,7 @@ logo: {
   cardDescription: {
     textAlign: 'center',
     fontSize: 14,
-    color: '#ccc',
+    color: '#b8b8b8',
   },
   section: {
     marginBottom: 15,
@@ -382,12 +384,12 @@ logo: {
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#E2B64D',
     borderRadius: 5,
     padding: 10,
     fontSize: 14,
     color: '#fff',
-    backgroundColor: '#0f3460',
+    backgroundColor: '#23232b',
   },
   button: {
     backgroundColor: '#E2B64D',
@@ -399,7 +401,7 @@ logo: {
     backgroundColor: '#a3a3a3',
   },
   buttonText: {
-    color: '#1a1a2e',
+    color: '#2A2B33',
     fontSize: 16,
   },
   switchText: {
@@ -407,6 +409,7 @@ logo: {
     fontSize: 14,
     color: '#E2B64D',
     marginTop: 2,
+
   },
 });
 

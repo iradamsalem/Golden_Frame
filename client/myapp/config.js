@@ -1,4 +1,6 @@
-const LOCAL_IP = 'http://192.168.1.142:3001';
+
+
+const LOCAL_IP = 'http://172.20.10.6:3001';
 
 export const API_BASE_URL = LOCAL_IP;
 
