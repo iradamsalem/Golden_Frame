@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator,ImageBackground } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { API_BASE_URL } from '../config';
 
@@ -62,7 +62,11 @@ const LoadingScreen = () => {
   }, [purpose, navigation]);
 
   return (
-    <View style={styles.container}>
+  
+    <ImageBackground
+          source={require('../assets/texture-bg.png')}
+          style={styles.background}>
+          <View style={styles.container}>
       <Text style={styles.title}>Analyzing Your Photos</Text>
       
       <View style={styles.content}>
@@ -76,17 +80,25 @@ const LoadingScreen = () => {
           <Text style={styles.errorText}>{error}</Text>
         </View>
       )}
+    
     </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a2e',
+   // backgroundColor: '#1a1a2e',
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+   background: {
+    resizeMode : "cover",
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   title: {
     fontSize: 28,
@@ -101,7 +113,8 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   statusText: {
-    color: '#E2B64D',
+    color: '#ccc',
+
     fontSize: 16,
     textAlign: 'center',
     marginTop: 20,

@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   Dimensions,
+  ImageBackground,
 } from 'react-native';
 import { Card, CardHeader, CardContent } from '../components/ui/card';
 import PhotoUploader from '../components/PhotoUploader';
@@ -53,6 +54,8 @@ const UploadPhotosScreen = () => {
   const firstLetter = user?.name?.charAt(0).toUpperCase() || '?';
 
   return (
+    <ImageBackground source={require('../assets/texture-bg.png')} style={styles.background}>
+     
     <View style={styles.container}>
       <View style={styles.header}>
         <Avatar fallbackText={firstLetter} size={40} />
@@ -103,21 +106,30 @@ const UploadPhotosScreen = () => {
         </Card>
       </View>
     </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    resizeMode : "cover",
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   container: {
     padding: 20,
     paddingTop: 50,
-    backgroundColor: '#2A2B33',
+   // backgroundColor: '#1a1a2e',
+
     flex: 1,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 15,
-    backgroundColor: '#121629',
+   // backgroundColor: '#14213d',
+
     padding: 10,
     borderRadius: 8,
   },
@@ -153,7 +165,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   card: {
-    backgroundColor: '#121629',
+  //  backgroundColor: '#16213E',
+
     borderRadius: 16,
     padding: 12,
     marginBottom: 20,

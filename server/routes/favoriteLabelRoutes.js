@@ -10,6 +10,6 @@ const router = express.Router();
  * @desc    Save user's favorite labels for a given purpose
  * @access  Public or Authenticated (based on your auth setup)
  */
-router.post('/', updateFavoriteLabelsController); // ✅ תוקן - מסלול ריק כי '/api/favorite-labels' כבר קיים בבסיס
+router.post('/', updateFavoriteLabelsController); 
 
 export default router;

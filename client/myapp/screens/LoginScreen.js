@@ -1,4 +1,9 @@
 import React, { useState, useContext } from 'react';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Keyboard } from 'react-native';
+import { useRef, useEffect } from 'react';
+
+
 import { useNavigation } from '@react-navigation/native';
 import {
   View,
@@ -8,6 +13,8 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  ImageBackground,
+
   Image
 } from 'react-native';
 
@@ -36,6 +43,29 @@ const LoginScreen = () => {
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState('default');
+
+  const scrollViewRef = useRef();
+  const cardRef = useRef(null);
+
+
+useEffect(() => {
+  const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+    scrollViewRef.current?.scrollToPosition(0, 250, true); // גלול תמיד לאותו מקום
+  });
+
+  const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+    scrollViewRef.current?.scrollToPosition(0, 0, true);
+  });
+
+  return () => {
+    showSubscription.remove();
+    hideSubscription.remove();
+  };
+}, []);
+
+
+
+
 
   const showToast = (message, type = 'default') => {
     setToastMessage(message);
@@ -150,14 +180,16 @@ const LoginScreen = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Image
-        source={require('../assets/GoldenFrameLogo.png')}
-        style={styles.logo}
-        resizeMode="contain"
-      />
-      <Text style={styles.title}>Purpose Pics</Text>
-      <Text style={styles.subtitle}>Find your perfect photo for any purpose</Text>
+   <ImageBackground source={require('../assets/texture-bg.png')} style={styles.background}>
+  <KeyboardAwareScrollView
+  ref={scrollViewRef}
+  contentContainerStyle={styles.overlay}
+  enableOnAndroid={true}
+  keyboardShouldPersistTaps="handled"
+>
+    <Image source={require('../assets/logo.png')} style={styles.logo} />
+    <Text style={styles.title}>Purpose Pics</Text>
+    <Text style={styles.subtitle}>Find your perfect photo for any purpose</Text>
 
       <Card style={styles.card}>
         <CardHeader>
@@ -247,6 +279,7 @@ const LoginScreen = () => {
             </>
           )}
         </CardContent>
+        
 
         <CardFooter>
           <TouchableOpacity onPress={() => setIsLogin(!isLogin)}>
@@ -255,25 +288,68 @@ const LoginScreen = () => {
             </Text>
           </TouchableOpacity>
         </CardFooter>
-      </Card>
+        
+</Card>
 
-      <Toaster visible={toastVisible} message={toastMessage} type={toastType} />
-    </ScrollView>
+    <Toaster visible={toastVisible} message={toastMessage} type={toastType} />
+  </KeyboardAwareScrollView>
+</ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 20,
-    alignItems: 'center',
-    backgroundColor: '#2A2B33',
+  headerSection: {
+  alignItems: 'center',
+  marginTop: 30,
+},
+
+scrollContainer: {
+  flexGrow: 1,
+  justifyContent: 'center',
+  padding: 20,
+  paddingBottom: 200, // מוסיף מקום לדחיפה
+},
+
+  background: {
+    resizeMode : "cover",
+    flex: 1,
+    width: '100%',
+    height: '100%',
+
   },
-  logo: {
-    marginBottom: 20,
-    width: 140,
-    height: 140,
-  },
+ overlay: {
+  flexGrow: 1,
+  padding: 20,
+  alignItems: 'center',
+  justifyContent: 'flex-start',
+  minHeight: 150, // ✅ מוסיף גובה בסיסי למסך
+  paddingBottom: 500, // ✅ מרחב לדחיפה בעת פתיחת מקלדת
+},
+card: {
+  width: '100%',
+  maxWidth: 400,
+//  aspectRatio: 0.8, // שומר פרופורציות קבועות (למשל 400x250)
+  borderRadius: 10,
+  overflow: 'hidden',
+  justifyContent: 'center',
+ // alignItems: 'center',
+},
+
+cardImage: {
+  resizeMode: 'contain', // מציג את כל התמונה
+  width: '100%',
+  height: '100%',
+},
+
+
+logo: {
+  width: '60%',
+  height: undefined,
+  aspectRatio: 1,
+  marginBottom: 20,
+  //alignItems: 'center',
+  resizeMode: 'contain',
+},
   title: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -286,13 +362,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
-  card: {
-    width: '100%',
-    maxWidth: 400,
-    backgroundColor: '#23232b',
-    borderRadius: 10,
-    padding: 10,
-  },
+
   cardTitle: {
     textAlign: 'center',
     fontSize: 18,
@@ -338,7 +408,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 14,
     color: '#E2B64D',
-    marginTop: 10,
+    marginTop: 2,
+
   },
 });
 

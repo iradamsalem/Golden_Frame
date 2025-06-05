@@ -13,7 +13,7 @@ const Label = ({ children, style, ...props }) => {
 const styles = StyleSheet.create({
   label: {
     fontSize: 16,
-    color: '#fff',
+    color: '#fffs',
     fontWeight: '500',
     marginBottom: 6,
   },
