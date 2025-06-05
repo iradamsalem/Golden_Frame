@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   Dimensions,
+  ImageBackground,
 } from 'react-native';
 import { Card, CardHeader, CardContent } from '../components/ui/card';
 import PhotoUploader from '../components/PhotoUploader';
@@ -53,6 +54,8 @@ const UploadPhotosScreen = () => {
   const firstLetter = user?.name?.charAt(0).toUpperCase() || '?';
 
   return (
+    <ImageBackground source={require('../assets/texture-bg.png')} style={styles.background}>
+     
     <View style={styles.container}>
       <View style={styles.header}>
         <Avatar fallbackText={firstLetter} size={40} />
@@ -104,21 +107,28 @@ const UploadPhotosScreen = () => {
         </Card>
       </View>
     </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    resizeMode : "cover",
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   container: {
     padding: 20,
     paddingTop: 50,
-    backgroundColor: '#1a1a2e',
+   // backgroundColor: '#1a1a2e',
     flex: 1,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 15,
-    backgroundColor: '#14213d',
+   // backgroundColor: '#14213d',
     padding: 10,
     borderRadius: 8,
   },
@@ -127,7 +137,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   userName: {
-    color: 'gold',
+    color: '#E2B64D',
     fontWeight: 'bold',
     fontSize: 16,
   },
@@ -136,7 +146,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   logoutButton: {
-    backgroundColor: 'gold',
+    backgroundColor: '#E2B64D',
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 5,
@@ -149,7 +159,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: 'bold',
-    color: '#FFD700',
+    color: '#E2B64D',
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -158,7 +168,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   card: {
-    backgroundColor: '#16213E',
+  //  backgroundColor: '#16213E',
     borderRadius: 16,
     padding: 12,
     marginBottom: 20,
@@ -167,7 +177,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   purposeButton: {
-    backgroundColor: '#FFD700',
+    backgroundColor: '#E2B64D',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
