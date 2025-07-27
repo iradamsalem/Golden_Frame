@@ -1,5 +1,3 @@
-import fs from 'fs/promises';
-import path from 'path';
 import { analyzeImage } from '../utils/visionUtils.js';
 import { calculateResolution } from '../utils/resolutionUtils.js';
 import { calculateBrightness } from '../utils/brightnessUtils.js';
@@ -8,35 +6,21 @@ import { getScores } from '../analyzers/getScores.js';
 import { Analyzer } from '../analyzers/photoAnalyzer.js';
 import { inferLabels } from '../analyzers/labelEnricher.js';
 import { normalizePurpose } from '../utils/normalizePurpose.js';
-import { getFavoriteLabelsByPurpose } from '../storage/userStorage.js'; 
+import { getFavoriteLabelsByPurpose } from '../storage/userStorage.js';
+import { runLabelSimilarity } from '../utils/runLabelSimilarity.js'; // ✅ ודא שזה הנתיב הנכון
 
-const RAG_FOLDER = path.resolve('./rag');
-const USER_LABELS_FILE = path.join(RAG_FOLDER, 'user_labels.json');
-
-async function writeUserLabelsToFile(username, purpose) {
-  try {
-    const normalizedPurpose = normalizePurpose(purpose);
-    const labels = await getFavoriteLabelsByPurpose(username, normalizedPurpose) || [];
-
-    const dataToSave = {
-      username,
-      purpose: normalizedPurpose,
-      labels,
-      timestamp: new Date().toISOString(),
-    };
-
-    
-    await fs.writeFile(USER_LABELS_FILE, JSON.stringify(dataToSave, null, 2), 'utf-8');
-
-    console.log(`✅ User labels file updated for user "${username}" and purpose "${normalizedPurpose}"`);
-  } catch (error) {
-    console.error('❌ Failed to write user labels file:', error);
-  }
+async function getUserLabels(username, purpose) {
+  const normalizedPurpose = normalizePurpose(purpose);
+  const labels = await getFavoriteLabelsByPurpose(username, normalizedPurpose) || [];
+  return {
+    username,
+    purpose: normalizedPurpose,
+    labels,
+    timestamp: new Date().toISOString(),
+  };
 }
 
 export const processPhotos = async (photos, purpose, username) => {
-  await writeUserLabelsToFile(username, purpose);
-
   console.log('🔄 Processing photos...');
   console.log('Purpose:', purpose);
   console.log('Username:', username);
@@ -63,7 +47,7 @@ export const processPhotos = async (photos, purpose, username) => {
       description: l.description,
       score: l.score
     })) || [];
-    
+
     const labels = inferLabels(rawLabels);
 
     const landmarks = visionData.landmarkAnnotations?.map(l => ({
@@ -115,9 +99,24 @@ export const processPhotos = async (photos, purpose, username) => {
 
     enrichedPhotos.push(enriched);
   }
-  console.log(purpose);
-  const photoScoresMap = await getScores(enrichedPhotos,purpose);
-  const result = Analyzer(photoScoresMap,purpose);
+
+  const userLabels = await getUserLabels(username, purpose);
+
+  const images = {};
+  for (const photo of enrichedPhotos) {
+    images[photo.originalName] = photo.labels.map(l => l.description);
+  }
+
+  const similarityInput = {
+    images,
+    category: purpose,
+    userLabels
+  };
+  console.log("📤 Sending input to Python:", JSON.stringify(similarityInput, null, 2));
+  const similarityResult = await runLabelSimilarity(similarityInput);
+
+  const photoScoresMap = await getScores(enrichedPhotos, purpose, similarityResult);
+  const result = Analyzer(photoScoresMap, purpose);
 
   console.log("📊 Final results with full enrichment:", result);
   return result;
