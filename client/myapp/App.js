@@ -10,7 +10,7 @@ import LoginScreen from './screens/LoginScreen';
 import ResultsDisplay from './components/ResultsDisplay';
 import LoadingScreen from './screens/LoadingScreen';
 import LoadingGate from './screens/LoadingGate';
-
+import GenerateResultScreen from './screens/GenerateResultScreen'; 
 
 const Stack = createNativeStackNavigator();
 
@@ -28,9 +28,8 @@ export default function App() {
           <Stack.Screen name="Loading" component={LoadingScreen} />
           <Stack.Screen name="ResultsDisplay" component={ResultsDisplay} />
           <Stack.Screen name="Test" component={TestScreen} />
-
-          {/* מסך ביניים לבדיקה אם המשתמש מחובר */}
           <Stack.Screen name="LoadingGate" component={LoadingGate} />
+          <Stack.Screen name="GenerateResult" component={GenerateResultScreen} /> 
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>
