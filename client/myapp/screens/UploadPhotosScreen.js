@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   Dimensions,
+  ImageBackground,
 } from 'react-native';
 import { Card, CardHeader, CardContent } from '../components/ui/card';
 import PhotoUploader from '../components/PhotoUploader';
@@ -53,12 +54,13 @@ const UploadPhotosScreen = () => {
   const firstLetter = user?.name?.charAt(0).toUpperCase() || '?';
 
   return (
+    <ImageBackground source={require('../assets/texture-bg.png')} style={styles.background}>
+     
     <View style={styles.container}>
       <View style={styles.header}>
         <Avatar fallbackText={firstLetter} size={40} />
         <View style={styles.userInfo}>
           <Text style={styles.userName}>{user?.name || 'Guest'}</Text>
-          <Text style={styles.userEmail}>{user?.email || 'No email'}</Text>
         </View>
         <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
           <Text style={styles.logoutText}>Logout</Text>
@@ -104,21 +106,30 @@ const UploadPhotosScreen = () => {
         </Card>
       </View>
     </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    resizeMode : "cover",
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   container: {
     padding: 20,
     paddingTop: 50,
-    backgroundColor: '#1a1a2e',
+   // backgroundColor: '#1a1a2e',
+
     flex: 1,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 15,
-    backgroundColor: '#14213d',
+   // backgroundColor: '#14213d',
+
     padding: 10,
     borderRadius: 8,
   },
@@ -127,29 +138,25 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   userName: {
-    color: 'gold',
+    color: '#E2B64D',
     fontWeight: 'bold',
     fontSize: 16,
   },
-  userEmail: {
-    color: '#ccc',
-    fontSize: 13,
-  },
   logoutButton: {
-    backgroundColor: 'gold',
+    backgroundColor: '#E2B64D',
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 5,
   },
   logoutText: {
-    color: '#1a1a2e',
+    color: '#2A2B33',
     fontWeight: 'bold',
     fontSize: 14,
   },
   title: {
     fontSize: 26,
     fontWeight: 'bold',
-    color: '#FFD700',
+    color: '#E2B64D',
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -158,7 +165,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   card: {
-    backgroundColor: '#16213E',
+  //  backgroundColor: '#16213E',
+
     borderRadius: 16,
     padding: 12,
     marginBottom: 20,
@@ -167,7 +175,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   purposeButton: {
-    backgroundColor: '#FFD700',
+    backgroundColor: '#E2B64D',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
@@ -176,12 +184,12 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   purposeButtonText: {
-    color: '#1a1a2e',
+    color: '#2A2B33',
     fontSize: 16,
     fontWeight: 'bold',
   },
   errorText: {
-    color: '#FF6B6B',
+    color: '#ff6b6b',
     textAlign: 'center',
     marginTop: 5,
     fontSize: 14,
@@ -210,14 +218,14 @@ const styles = StyleSheet.create({
   },
   removeButton: {
     marginTop: 6,
-    backgroundColor: '#007BFF',
+    backgroundColor: '#b8c1ec',
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
     alignSelf: 'center',
   },
   removeButtonText: {
-    color: 'white',
+    color: '#232946',
     fontWeight: 'bold',
   },
 });

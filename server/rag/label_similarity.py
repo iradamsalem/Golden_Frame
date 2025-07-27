@@ -6,16 +6,12 @@ import torch
 from transformers import AutoTokenizer, AutoModel
 from sklearn.metrics.pairwise import cosine_similarity
 
-
 base_dir = os.path.dirname(__file__)
 embeddings_path = os.path.join(base_dir, "label_embeddings.json")
-user_labels_path = os.path.join(base_dir, "user_labels.json")  # ✅
 
 with open(embeddings_path, "r", encoding="utf-8") as f:
-    category_embeddings = json.load(f)
-
-with open(user_labels_path, "r", encoding="utf-8") as f:
-    user_data = json.load(f)  # כולל: username, purpose, labels
+    raw_embeddings = json.load(f)
+    category_embeddings = {k.lower(): v for k, v in raw_embeddings.items()}  # ✅ קריטי
 
 MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
@@ -53,23 +49,27 @@ def main():
     try:
         raw_input = sys.stdin.read()
         data = json.loads(raw_input)
+
         images = data["images"]
-        category = data["category"]
+        category = data["category"].lower()  # ✅ הפוך ל-lowercase
+        user_data = data.get("userLabels", {})
+        user_labels = user_data.get("labels", [])
+
     except Exception as e:
+        print(f"[❌ ERROR] Failed to parse input: {e}", file=sys.stderr)
         print(json.dumps({"error": f"קלט לא תקין: {e}"}))
         sys.exit(1)
 
     try:
         category_vector = np.array(category_embeddings[category])
     except KeyError:
-        print(json.dumps({
-            "error": f"קטגוריה '{category}' לא קיימת. קטגוריות זמינות: {list(category_embeddings.keys())}"
-        }))
+        err_msg = f"קטגוריה '{category}' לא קיימת. קטגוריות זמינות: {list(category_embeddings.keys())}"
+        print(f"[❌ ERROR] {err_msg}", file=sys.stderr)
+        print(json.dumps({"error": err_msg}))
         sys.exit(1)
 
     print(f"✅ Calculating for category: {category}", file=sys.stderr)
 
-    user_labels = user_data.get("labels", [])
     if user_labels:
         print(f"👤 User labels found: {len(user_labels)}", file=sys.stderr)
     else:
@@ -104,4 +104,9 @@ def main():
     print(json.dumps(result, ensure_ascii=False))
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(f"[❌ CRITICAL ERROR] Uncaught exception: {e}", file=sys.stderr)
+        print(json.dumps({"error": f"Uncaught exception: {e}"}))
+        sys.exit(1)
