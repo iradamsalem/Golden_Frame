@@ -7,21 +7,26 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { API_BASE_URL } from '../config';
 
 const getPurposeHint = (purpose) => {
-  switch ((purpose || '').toLowerCase()) {
+  const key = (purpose || '').toLowerCase().trim();
+  switch (key) {
     case 'instagram':
       return '📸 Generate stylish and trendy captions that match your aesthetic for Instagram.';
     case 'facebook':
       return '👥 Write a warm and social post that fits family moments, events or memories.';
     case 'twitter':
+    case 'twitter/x':
+    case 'x':
       return '🐦 Create short, witty, or bold statements that stand out in a minimal format.';
     case 'linkedin':
       return '💼 Write a professional summary or headline that showcases your strengths.';
     case 'dating':
+    case 'dating apps':
       return '💘 Create a fun, honest, and confident description that represents who you are.';
     case 'resume':
       return '📄 Write a clean and strong professional summary suitable for a resume or job application.';
@@ -32,7 +37,7 @@ const getPurposeHint = (purpose) => {
 
 const GenerateResultScreen = () => {
   const route = useRoute();
-  const { purpose, likedLabels = [] } = route.params || {}; 
+  const { purpose, likedLabels = [], likedPhotos = [] } = route.params || {};
 
   const [userPrompt, setUserPrompt] = useState('');
   const [generatedText, setGeneratedText] = useState('');
@@ -44,44 +49,55 @@ const GenerateResultScreen = () => {
     setGeneratedText('');
     setError('');
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/generate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          purpose,
-          prompt: userPrompt,
-          labels: likedLabels,
-        }),
-      });
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY = 2000;
 
-      const data = await response.json();
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/generate`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            purpose,
+            prompt: userPrompt,
+            labels: likedLabels,
+          }),
+        });
 
-      if (response.ok) {
-        setGeneratedText(data.result);
-      } else {
-        setError(data.error || 'Something went wrong.');
+        const data = await response.json();
+
+        if (response.ok) {
+          setGeneratedText(data.result);
+          setLoading(false);
+          return;
+        } else {
+          throw new Error(data.error || 'Something went wrong.');
+        }
+
+      } catch (err) {
+        if (attempt === MAX_RETRIES) {
+          console.error('❌ Final attempt failed:', err);
+          setError('Server error. Please try again later.');
+        } else {
+          console.warn(`⚠️ Attempt ${attempt} failed. Retrying...`);
+          await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
+        }
       }
-    } catch (err) {
-      console.error('❌ Error:', err);
-      setError('Server error. Please try again.');
-    } finally {
-      setLoading(false);
     }
+
+    setLoading(false);
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}> Generate Result </Text>
+      <Text style={styles.title}>Generate Result</Text>
 
       <View style={styles.section}>
         <Text style={styles.label}>Selected Purpose:</Text>
         <Text style={styles.value}>{purpose || 'N/A'}</Text>
       </View>
-
-      
 
       <View style={styles.section}>
         <Text style={styles.purposeHint}>{getPurposeHint(purpose)}</Text>
@@ -117,9 +133,26 @@ const GenerateResultScreen = () => {
       )}
 
       {generatedText ? (
-        <View style={styles.resultBox}>
-          <Text style={styles.resultText}>{generatedText}</Text>
-        </View>
+        <>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.likedPhotosContainer}>
+            {likedPhotos.map((photo, index) => (
+              <View key={index} style={styles.imageWrapper}>
+                <Text style={styles.rankBadge}>#{photo.rank}</Text>
+                <View style={styles.imageBorder}>
+                  <Image
+                    source={{ uri: photo.image }}
+                    style={styles.likedImage}
+                    resizeMode="cover"
+                  />
+                </View>
+              </View>
+            ))}
+          </ScrollView>
+
+          <View style={styles.resultBox}>
+            <Text style={styles.resultText}>{generatedText}</Text>
+          </View>
+        </>
       ) : null}
 
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
@@ -165,17 +198,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     lineHeight: 22,
   },
-  labelsBox: {
-    backgroundColor: '#1c1c2e',
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 24,
-  },
-  labelItem: {
-    color: '#E2B64D',
-    fontSize: 14,
-    marginBottom: 4,
-  },
   input: {
     backgroundColor: '#1c1c2e',
     color: '#fff',
@@ -203,6 +225,30 @@ const styles = StyleSheet.create({
     color: '#0d0d1a',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  likedPhotosContainer: {
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  imageWrapper: {
+    marginRight: 12,
+    alignItems: 'center',
+  },
+  imageBorder: {
+    borderColor: '#E2B64D',
+    borderWidth: 2,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  likedImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 10,
+  },
+  rankBadge: {
+    color: '#E2B64D',
+    marginBottom: 4,
+    fontWeight: 'bold',
   },
   resultBox: {
     backgroundColor: '#1c1c2e',

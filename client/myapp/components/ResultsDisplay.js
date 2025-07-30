@@ -39,17 +39,12 @@ const ResultsDisplay = () => {
 
   useEffect(() => {
     if (showEndScreen) {
-      console.log('🟡 Liked indexes:', likedIndexes);
-
       const likedLabels = likedIndexes.flatMap(index => {
         const photo = photos[index];
-        console.log(`📸 Index ${index} labels:`, photo?.labels || []);
         return photo?.labels || [];
       });
 
       const uniqueLabels = [...new Set(likedLabels)];
-      console.log('🧠 Positive labels from liked photos (raw):', likedLabels);
-      console.log('🔗 All liked labels (deduplicated):', uniqueLabels);
 
       if (user?.email && purpose && uniqueLabels.length > 0) {
         fetch(`${API_BASE_URL}/api/favorite-labels`, {
@@ -194,6 +189,8 @@ const ResultsDisplay = () => {
       .flatMap(index => photos[index]?.labels || [])
       .filter(Boolean);
 
+    const likedPhotos = likedIndexes.map(index => photos[index]); // ✅ NEW LINE
+
     return (
       <ImageBackground source={require('../assets/texture-bg.png')} style={styles.background}>
         <View style={styles.endScreen}>
@@ -209,6 +206,7 @@ const ResultsDisplay = () => {
               navigation.navigate('GenerateResult', {
                 purpose,
                 likedLabels,
+                likedPhotos, // ✅ ADD THIS
               })
             }
           >
@@ -301,7 +299,6 @@ const styles = StyleSheet.create({
   },
   scoreText: { color: '#E2B64D', fontWeight: 'bold' },
   swipeHint: { color: '#ccc', fontSize: 14, textAlign: 'center', marginTop: 10 },
-
   overlayLabelContainer: {
     position: 'absolute',
     top: 40,
