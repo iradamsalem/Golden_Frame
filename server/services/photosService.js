@@ -7,7 +7,7 @@ import { Analyzer } from '../analyzers/photoAnalyzer.js';
 import { inferLabels } from '../analyzers/labelEnricher.js';
 import { normalizePurpose } from '../utils/normalizePurpose.js';
 import { getFavoriteLabelsByPurpose } from '../storage/userStorage.js';
-import { runLabelSimilarity } from '../utils/runLabelSimilarity.js'; // ✅ ודא שזה הנתיב הנכון
+import { runLabelSimilarity } from '../utils/runLabelSimilarity.js'; // 
 
 async function getUserLabels(username, purpose) {
   const normalizedPurpose = normalizePurpose(purpose);
@@ -115,7 +115,7 @@ export const processPhotos = async (photos, purpose, username) => {
   console.log("📤 Sending input to Python:", JSON.stringify(similarityInput, null, 2));
   const similarityResult = await runLabelSimilarity(similarityInput);
 
-  const photoScoresMap = await getScores(enrichedPhotos, purpose, similarityResult);
+  const photoScoresMap = await getScores(enrichedPhotos, purpose, similarityResult,similarityResult);
   const result = Analyzer(photoScoresMap, purpose);
 
   console.log("📊 Final results with full enrichment:", result);
