@@ -4,8 +4,13 @@ import mongoose from 'mongoose';
  * User Schema
  * 
  * Represents a user in the system.
- *   
  */
+
+const weightedLabelMap = {
+  type: Map,
+  of: Number,
+  default: new Map()
+};
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -13,6 +18,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+
   email: {
     type: String,
     required: true,
@@ -20,25 +26,27 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     trim: true
   },
+
   password: {
     type: String,
     required: true
   },
+
   createdAt: {
     type: Date,
     default: Date.now
   },
+
   favoriteLabels: {
-    linkedin:     { type: [String], default: [] },
-    instagram:    { type: [String], default: [] },
-    facebook:     { type: [String], default: [] },
-    twitter:      { type: [String], default: [] },
-    resume:       { type: [String], default: [] },
-    professional: { type: [String], default: [] },
-    datingApps:   { type: [String], default: [] }
+    linkedin:     { ...weightedLabelMap },
+    instagram:    { ...weightedLabelMap },
+    facebook:     { ...weightedLabelMap },
+    twitter:      { ...weightedLabelMap },
+    resume:       { ...weightedLabelMap },
+    professional: { ...weightedLabelMap },
+    datingApps:   { ...weightedLabelMap }
   }
 });
-
 
 const User = mongoose.model('User', userSchema);
 export default User;

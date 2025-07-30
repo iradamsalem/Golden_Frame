@@ -5,7 +5,9 @@ import dotenv from 'dotenv';
 
 import photosRoutes from './routes/photos.routes.js'; 
 import userRoutes from './routes/userRoutes.js';
-import favoriteLabelRoutes from './routes/favoriteLabelRoutes.js'; 
+import favoriteLabelRoutes from './routes/favoriteLabelRoutes.js';
+import generateRoutes from './routes/generateRoutes.js'; 
+
 
 dotenv.config();
 
@@ -20,6 +22,7 @@ app.use(express.json());
 app.use('/api/photos', photosRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/favorite-labels', favoriteLabelRoutes); 
+app.use('/api/generate', generateRoutes); 
 
 // DB connection
 mongoose.connect(process.env.MONGO_URI, {

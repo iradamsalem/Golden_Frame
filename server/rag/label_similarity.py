@@ -1,21 +1,21 @@
 import json
 import os
 import sys
+import uuid
 import numpy as np
 import torch
 from transformers import AutoTokenizer, AutoModel
 from sklearn.metrics.pairwise import cosine_similarity
 
+run_id = str(uuid.uuid4())
+print(f"\n🔁 New Python run ID: {run_id}\n", file=sys.stderr)
 
 base_dir = os.path.dirname(__file__)
 embeddings_path = os.path.join(base_dir, "label_embeddings.json")
-user_labels_path = os.path.join(base_dir, "user_labels.json")  # ✅
 
 with open(embeddings_path, "r", encoding="utf-8") as f:
-    category_embeddings = json.load(f)
-
-with open(user_labels_path, "r", encoding="utf-8") as f:
-    user_data = json.load(f)  # כולל: username, purpose, labels
+    raw_embeddings = json.load(f)
+    category_embeddings = {k.lower(): v for k, v in raw_embeddings.items()}
 
 MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
@@ -52,28 +52,33 @@ def compute_similarity(vec1, vec2):
 def main():
     try:
         raw_input = sys.stdin.read()
+        print(f"📥 [{run_id}] Raw input received:\n{raw_input}\n", file=sys.stderr)
+
         data = json.loads(raw_input)
         images = data["images"]
-        category = data["category"]
+        category = data["category"].lower()
+        user_data = data.get("userLabels", {})
+        user_labels = user_data.get("labels", [])
+
     except Exception as e:
+        print(f"[❌ {run_id}] Failed to parse input: {e}", file=sys.stderr)
         print(json.dumps({"error": f"קלט לא תקין: {e}"}))
         sys.exit(1)
 
     try:
         category_vector = np.array(category_embeddings[category])
     except KeyError:
-        print(json.dumps({
-            "error": f"קטגוריה '{category}' לא קיימת. קטגוריות זמינות: {list(category_embeddings.keys())}"
-        }))
+        err_msg = f"קטגוריה '{category}' לא קיימת. קטגוריות זמינות: {list(category_embeddings.keys())}"
+        print(f"[❌ {run_id}] {err_msg}", file=sys.stderr)
+        print(json.dumps({"error": err_msg}))
         sys.exit(1)
 
-    print(f"✅ Calculating for category: {category}", file=sys.stderr)
+    print(f"✅ [{run_id}] Calculating for category: {category}", file=sys.stderr)
 
-    user_labels = user_data.get("labels", [])
     if user_labels:
-        print(f"👤 User labels found: {len(user_labels)}", file=sys.stderr)
+        print(f"👤 [{run_id}] User labels found: {len(user_labels)}", file=sys.stderr)
     else:
-        print(f"⚠️ No user labels found", file=sys.stderr)
+        print(f"⚠️ [{run_id}] No user labels found", file=sys.stderr)
 
     user_vector = average_embedding(user_labels) if user_labels else None
 
@@ -81,11 +86,11 @@ def main():
 
     for image_name, labels in images.items():
         try:
-            print(f"📷 Processing image: {image_name} with {len(labels)} labels", file=sys.stderr)
+            print(f"📷 [{run_id}] Processing image: {image_name} with {len(labels)} labels", file=sys.stderr)
 
             image_vector = average_embedding(labels)
             if image_vector is None:
-                print(f"⚠️ No vector for image: {image_name}", file=sys.stderr)
+                print(f"⚠️ [{run_id}] No vector for image: {image_name}", file=sys.stderr)
                 result[image_name] = 1
                 continue
 
@@ -94,14 +99,19 @@ def main():
 
             score = (0.7 * sim_user) + (0.3 * sim_cat)
 
-            print(f"🧠 Score for {image_name}: user_sim={sim_user:.2f}, cat_sim={sim_cat:.2f}, final={score:.2f}", file=sys.stderr)
+            print(f"🧠 [{run_id}] Score for {image_name}: user_sim={sim_user:.2f}, cat_sim={sim_cat:.2f}, final={score:.2f}", file=sys.stderr)
 
             result[image_name] = max(1, min(int(round(score * 100)), 100))
         except Exception as e:
-            print(f"[❌ ERROR] Failed processing {image_name}: {e}", file=sys.stderr)
+            print(f"[❌ {run_id}] Failed processing {image_name}: {e}", file=sys.stderr)
             result[image_name] = 1
 
     print(json.dumps(result, ensure_ascii=False))
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(f"[❌ CRITICAL {run_id}] Uncaught exception: {e}", file=sys.stderr)
+        print(json.dumps({"error": f"Uncaught exception: {e}"}))
+        sys.exit(1)
