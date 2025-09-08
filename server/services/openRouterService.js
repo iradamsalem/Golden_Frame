@@ -138,7 +138,7 @@ export const generateWithOpenRouter = async (purpose, prompt, labels) => {
   const response = await axios.post(
     "https://openrouter.ai/api/v1/chat/completions",
     {
-      model: "meta-llama/llama-4-maverick:free",  // 🔥 הדגם החינמי המומלץ
+      model: "meta-llama/llama-4-maverick:free",  
       temperature: 0.4,
       top_p: 0.9,
       max_tokens: 120,
